@@ -1,0 +1,23 @@
+{
+  "name": "devmind-website",
+  "version": "1.0.0",
+  "description": "Gulp extensions to generate a website with blog pages written in asciidoc",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dev-Mind/devmind-website.git"
+  },
+  "keywords": [
+    "Website",
+    "AsciiDoc"
+  ],
+  "author": "Guillaume EHRET <Dev-Mind>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Dev-Mind/devmind-website/issues"
+  },
+  "homepage": "https://github.com/Dev-Mind/devmind-website#readme"
+}

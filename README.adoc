@@ -13,8 +13,10 @@ This module is made to be used in a GulpFile. You can read the link:./gulpfile.j
 To install this module use for example with yarn
 
 ```
-yarn add https://github.com/Dev-Mind/devmind-website.git
+yarn add https://github.com/Dev-Mind/devmind-website.git#X.Y.Z
 ```
+
+Find the good version X.Y.Z on https://github.com/Dev-Mind/devmind-website/releases
 
 To import the module in your gulpfile you can use
 
@@ -28,7 +30,7 @@ You can also send parameters. Below I use the default values
 [source,javascript]
 ----
 const WEBSITE_PARAMS = {
-  path : '../../',
+  path : '../../../',
   metadata : {
     rss: 'src/metadata/rss.json',
     blog: 'src/metadata/blog.json',
@@ -41,11 +43,51 @@ const website = require('./index')(WEBSITE_PARAMS);
 
 == Extensions
 
+=== apply-template
+TODO
+
+=== convert-to-blog-list
+TODO
+
+=== convert-to-blog-page
+TODO
+
+=== convert-to-html
+TODO
+
+=== convert-to-json
+TODO
+
+=== convert-to-rss
+TODO
+
+=== convert-to-sitemap
+TODO
+
+=== file-exist
+TODO
+
+=== files-exist
+TODO
+
+=== highlight-code
+TODO
+
+=== read-asciidoctor
+TODO
+
+=== read-html
+TODO
+
+=== read-index
+TODO
+
+== Use cases
+
+TODO
 
 == Dev & prod
-
-Some modules make different things in dev mode or for prod.
-
+TODO
 
 == Compatibility
 You have to use a

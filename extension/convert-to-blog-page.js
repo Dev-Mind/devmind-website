@@ -52,8 +52,13 @@ module.exports = (options, handlebarsTemplateFile, partials, blogIndexFile) => {
       };
     }
 
+    const content = handlebarsTemplate(file.templateModel)
+      .replace('<html><head></head><body>', '')
+      .replace('</body>', '')
+      .replace('</html>', '');
+
     file.templateModel.contents = file.contents.toString();
-    file.contents = Buffer.from(handlebarsTemplate(file.templateModel));
+    file.contents = Buffer.from(content);
 
     next(null, file);
   });

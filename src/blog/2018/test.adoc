@@ -1,0 +1,10 @@
+:doctitle: Test
+:description: Test
+:keywords: Agilité, Leadership, Management
+:author: Guillaume EHRET - Dev-Mind
+:revdate: 2015-09-15
+:category: Agilité
+:teaser: Test
+:imgteaser: ../../img/blog/2015/formes_leadership_00.jpg
+
+Test

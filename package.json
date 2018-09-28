@@ -4,7 +4,7 @@
   "description": "Gulp extensions to generate a website with blog pages written in asciidoc",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "gulp"
   },
   "repository": {
     "type": "git",
@@ -14,10 +14,30 @@
     "Website",
     "AsciiDoc"
   ],
+  "engines": {
+    "node": ">10.0.0"
+  },
   "author": "Guillaume EHRET <Dev-Mind>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Dev-Mind/devmind-website/issues"
   },
-  "homepage": "https://github.com/Dev-Mind/devmind-website#readme"
+  "homepage": "https://github.com/Dev-Mind/devmind-website#readme",
+  "devDependencies": {
+    "gulp": "4.0.0",
+    "gulp-cli": "^2.0.1"
+  },
+  "dependencies": {
+    "asciidoctor.js": "^1.5.6-preview.3",
+    "cheerio": "^1.0.0-rc.2",
+    "fs": "^0.0.1-security",
+    "graceful-fs": "^4.1.11",
+    "handlebars": "^4.0.12",
+    "highlights": "^3.1.1",
+    "map-stream": "^0.0.7",
+    "moment": "^2.18.1",
+    "node-prismjs": "^0.1.2",
+    "plugin-error": "^1.0.1",
+    "through": "^2.3.8"
+  }
 }

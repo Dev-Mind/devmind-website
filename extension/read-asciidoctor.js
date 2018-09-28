@@ -1,7 +1,6 @@
 'use strict';
 
 const map = require('map-stream');
-const asciidoctor = require('../node_modules/asciidoctor.js/dist/node/asciidoctor')();
 const moment = require('moment');
 
 const asciidoctorOptions = {
@@ -25,6 +24,8 @@ const asciidoctorOptions = {
  * @returns {stream}
  */
 module.exports = function (options) {
+
+  const asciidoctor = require(`${options.path}node_modules/asciidoctor.js/dist/node/asciidoctor`)();
 
   return map((file, next) => {
 

@@ -2,6 +2,56 @@
 
 image::https://api.travis-ci.org/Dev-Mind/devmind-website.svg?branch=master[Travis status]
 
+This project is used to build the Dev-Mind websites. The aim is to use https://github.com/wycats/handlebars.js[handlebars] as template solution and https://asciidoctor.org/docs/asciidoctor.js/[asciidoctor.js] to writes dynamic pages as a blog. Several others extensions help to generate a rss file, a sitemap file...
+
 image::https://www.dev-mind.fr/img/logo/logo_1500.png[Dev-Mind]
 
-More informations very soon
+== Use this module
+
+This module is made to be used in a GulpFile. You can read the link:./gulpfile.js[gulpfile.js] used to test the extensions or you can see the gulpfile used on the main Dev-Mind website (https://github.com/Dev-Mind/dev-mind.fr).
+
+To install this module use for example with yarn
+
+```
+yarn add https://github.com/Dev-Mind/devmind-website.git
+```
+
+To import the module in your gulpfile you can use
+
+[source,javascript]
+----
+const website = require('devmind-website')();
+----
+
+You can also send parameters. Below I use the default values
+
+[source,javascript]
+----
+const WEBSITE_PARAMS = {
+  path : '../../',
+  metadata : {
+    rss: 'src/metadata/rss.json',
+    blog: 'src/metadata/blog.json',
+    html: 'src/metadata/html.json',
+    sitemap: 'src/metadata/sitemap.json'
+  }
+};
+const website = require('./index')(WEBSITE_PARAMS);
+----
+
+== Extensions
+
+
+== Dev & prod
+
+Some modules make different things in dev mode or for prod.
+
+
+== Compatibility
+You have to use a
+
+* node version >= 10.0
+* gulp >= 4.0.0
+
+== License
+`devmind-website` is released under the MIT license.

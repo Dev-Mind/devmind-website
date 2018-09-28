@@ -1,3 +1,5 @@
+:toc:
+
 = Module node devmind-website
 
 image::https://api.travis-ci.org/Dev-Mind/devmind-website.svg?branch=master[Travis status]
@@ -44,7 +46,24 @@ const website = require('./index')(WEBSITE_PARAMS);
 == Extensions
 
 === apply-template
-TODO
+Used to apply a handlebar template on a file stream. This extension has to be applied after `read-html` or `read-asciidoctor` extensions which create the `templateModel` sent to handlebars to populate the template
+
+*Example of usage*
+[source,javascript]
+----
+const HANDLEBARS_PARTIALS = [
+  {key: '_html_header', path: 'src/templates/_html_header.handlebars'},
+  {key: '_html_footer', path: 'src/templates/_html_footer.handlebars'}
+];
+
+gulp.task('html-template', () =>
+  gulp.src(`src/html/**/*.html`)
+      .pipe(website.readHtml())
+      .pipe(website.applyTemplate(`src/templates/site.handlebars`, HANDLEBARS_PARTIALS))
+      .pipe(gulp.dest('build/dist')));
+----
+
+The templateModel has several attributes. For more details read the section about `read-html` or `read-asciidoctor` extension.
 
 === convert-to-blog-list
 TODO
@@ -77,7 +96,75 @@ TODO
 TODO
 
 === read-html
-TODO
+Read a stream of HTML files and build for each HTML file
+
+* a templateModel, a structure JSON used after with handlebar and
+* an indexData object used to build an index file used by other extensions
+
+*Example of usage*
+[source,javascript]
+----
+gulp.task('html-template', () =>
+  gulp.src(`src/html/**/*.html`)
+      .pipe(website.readHtml())
+      .pipe(website.applyTemplate(`src/templates/site.handlebars`))
+      .pipe(gulp.dest('build/dist')));
+----
+
+The JSON templateModel has these values.
+
+* keywords : to provided in a metadata JSON
+* title : to provided in a metadata JSON
+* description : to provided in a metadata JSON
+* contents : read from the file in the stream
+* gendate : current instant
+* canonicalUrl : computed from the current file path
+* modedev : read in environment variables
+
+Some elements cannot be deduced. You have to provide these informations in JSON structure. By default this module read `src/metadata/html.json`. You can overrided this property in the config sent to this module
+
+[source,javascript]
+----
+const WEBSITE_PARAMS = {
+  metadata : {
+    html: 'src/metadata/html.json'
+  }
+};
+const website = require('./index')(WEBSITE_PARAMS);
+----
+
+This file has for example this content
+[source,javascript]
+----
+{
+  "404.html" : {
+    "keywords": "Dev-mind Guillaume EHRET développeur indépendant spécialiste Java, Web",
+    "title": "Dev-Mind 404",
+    "description" : "Page non trouvée sur le serveur",
+    "priority": -1
+  },
+  "formations.html" : {
+    "keywords": "Dev-mind organisme de formation",
+    "title": "Les formationds dispensées",
+    "description" : "Dev-Mind dispense plusieurs formations autour du web et de Java",
+    "priority": 0.6
+  }
+}
+----
+
+In your handlebar template you can use the templateModel property values. For example
+[source,html]
+----
+<html>
+    <head>
+        <title>{{ title }}</title>
+    </head>
+    <body>
+        <h1>{{ title }}</h1>
+        {{content}}
+    </body>
+</html>
+----
 
 === read-index
 TODO
@@ -87,7 +174,18 @@ TODO
 TODO
 
 == Dev & prod
-TODO
+
+In production you have to activate the mode prod in environment variable. For more detail you can read http://expressjs.com/en/advanced/best-practice-performance.html#set-node_env-to-production
+
+With systemd, use the Environment directive in your unit file. For example:
+
+[source,shell]
+----
+# /etc/systemd/system/myservice.service
+Environment=NODE_ENV=production
+----
+
+If we are not in production the templateModel used in handlebar templates contains a property `modeDev` to true (see section about `read-html` or `read-asciidoctor` extension)
 
 == Compatibility
 You have to use a

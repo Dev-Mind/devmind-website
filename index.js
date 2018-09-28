@@ -48,7 +48,7 @@ function website(options) {
     applyTemplate: (handlebarsTemplateFile, partials) => extApplyTemplate(options, handlebarsTemplateFile, partials),
 
     extFilesExist : () => extFilesExist(options),
-    fileExist: () => extFileExist(filePath),
+    fileExist: (filePath) => extFileExist(filePath),
     highlightCode: (selector) => extHighlightCode(selector),
 
     readAsciidoc: () => extReadAsciidoc(options),

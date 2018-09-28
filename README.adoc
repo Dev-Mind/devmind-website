@@ -1,5 +1,3 @@
-:toc:
-
 = Module node devmind-website
 
 image::https://api.travis-ci.org/Dev-Mind/devmind-website.svg?branch=master[Travis status]
@@ -7,6 +5,8 @@ image::https://api.travis-ci.org/Dev-Mind/devmind-website.svg?branch=master[Trav
 This project is used to build the Dev-Mind websites. The aim is to use https://github.com/wycats/handlebars.js[handlebars] as template solution and https://asciidoctor.org/docs/asciidoctor.js/[asciidoctor.js] to writes dynamic pages as a blog. Several others extensions help to generate a rss file, a sitemap file...
 
 image::https://www.dev-mind.fr/img/logo/logo_1500.png[Dev-Mind]
+
+If you want a real example see https://www.dev-mind.fr/
 
 == Use this module
 
@@ -65,35 +65,256 @@ gulp.task('html-template', () =>
 
 The templateModel has several attributes. For more details read the section about `read-html` or `read-asciidoctor` extension.
 
-=== convert-to-blog-list
-TODO
-
-=== convert-to-blog-page
-TODO
-
 === convert-to-html
-TODO
+Used to change Asciidoc file extension to html
+
+*Example of usage*
+[source,javascript]
+----
+gulp.task('blog-indexing', () =>
+  gulp.src('src/blog/**/*.adoc')
+      .pipe(website.readAsciidoc())
+      .pipe(website.convertToHtml())
+      .pipe(gulp.dest('build/.tmp'))
+);
+----
 
 === convert-to-json
-TODO
+Used to generate a JSON file with data read in HTML or Asciidoc file
+
+*Example of usage*
+[source,javascript]
+----
+gulp.task('blog-indexing', () =>
+  gulp.src('src/blog/**/*.adoc')
+      .pipe(website.readAsciidoc())
+      .pipe(website.convertToHtml())
+      .pipe(website.convertToJson('blogindex.json'))
+      .pipe(gulp.dest('build/.tmp'))
+);
+----
+
+The result is for example
+
+[source,javascript]
+----
+[
+  {
+      "strdate": "28/09/2018",
+      "revdate": "28/09/2018",
+      "doctitle": "Expérience de Guillaume EHRET",
+      "description": "CV numérique de Guillaume EHRET fondateur de Dev-Mind",
+      "keywords": [
+        "Dev-mind",
+        "Java",
+        "JavaScript",
+        "HTML",
+        "CSS"
+      ],
+      "filename": "experience",
+      "priority": 0.6,
+      "dir": "/"
+    }
+    ...
+]
+----
 
 === convert-to-rss
-TODO
+Tansforms a Json list with metadata to an RSS file
+
+*Example of usage*
+[source,javascript]
+----
+gulp.task('blog-rss', () =>
+  gulp.src('build/.tmp/blogindex.json')
+      .pipe(website.readIndex())
+      .pipe(website.convertToRss('blog.xml'))
+      .pipe(gulp.dest('build/dist/rss'))
+);
+----
+In this example I read an index written in Json and `read-index` helps to read the content and send it to the extension `convert-to-rss`. This extension creates the file `blog.xml`
+
+The file `build/.tmp/blogindex.json` is for example
+
+[source,javascript]
+----
+[
+  {
+      "strdate": "28/09/2018",
+      "revdate": "28/09/2018",
+      "doctitle": "Expérience de Guillaume EHRET",
+      "description": "CV numérique de Guillaume EHRET fondateur de Dev-Mind",
+      "keywords": [
+        "Dev-mind",
+        "Java",
+        "JavaScript",
+        "HTML",
+        "CSS"
+      ],
+      "filename": "experience",
+      "priority": 0.6,
+      "dir": "/"
+    }
+]
+----
 
 === convert-to-sitemap
-TODO
+If you want to be indexed your website on Google or other web brothers, you can expose a file sitemap.xml with all the pages to index. This extension is used for that
+
+*Example of usage*
+[source,javascript]
+----
+gulp.task('sitemap', () =>
+  gulp.src(['build/.tmp/blogindex.json', 'build/.tmp/pageindex.json'])
+      .pipe(website.readIndex())
+      .pipe(website.convertToSitemap())
+      .pipe(gulp.dest('build/dist'))
+);
+----
+In this example I read 2 index written in Json (`blogindex` and `pageindex`). Extension `read-index` helps to read them, and send them to the extension `convert-to-sitemap` which is able to generate the file  `sitemap.xml`
+
+The file `build/.tmp/blogindex.json` is for example
+
+[source,javascript]
+----
+[
+  {
+      "strdate": "28/09/2018",
+      "revdate": "28/09/2018",
+      "doctitle": "Expérience de Guillaume EHRET",
+      "description": "CV numérique de Guillaume EHRET fondateur de Dev-Mind",
+      "keywords": [
+        "Dev-mind",
+        "Java",
+        "JavaScript",
+        "HTML",
+        "CSS"
+      ],
+      "filename": "experience",
+      "priority": 0.6,
+      "
+  }
+]
+----
 
 === file-exist
-TODO
+This extension return true if the file exists
+
+*Example of usage*
+[source,javascript]
+----
+const page = path.resolve(__dirname, options.path, file.path);
+if(!fileExist(page)){
+  throw new PluginError('files-exist', `File ${file.path} does not existe`);
+}
+----
 
 === files-exist
-TODO
+Use to verify if each files exists in your project. If a file is not present an Exception is thrown
+
+*Example of usage*
+[source,javascript]
+----
+gulp.task('check', () =>
+  gulp.src([ 'build/.tmp/blogindex.json',
+             'build/.tmp/pageindex.json',
+             'build/dist/rss/blog.xml',
+             'build/dist/sitemap.xml'])
+      .pipe(website.extFilesExist())
+      .pipe(gulp.dest('build/check'))
+);
+----
 
 === highlight-code
-TODO
+Use to highlight the source code defined in yours HTML pages.
+
+*Example of usage*
+If your code is defined between these markups
+
+[source,javascript]
+----
+<pre class="highlight">
+    <code class="language-html" data-lang="java">
+        // My code
+    </code>
+</pre>
+----
+
+You can use this extension like this
+[source,javascript]
+----
+gulp.task('blog-page', (cb) => {
+  gulp.src('src/blog/**/*.adoc')
+      .pipe(website.readHtml())
+      .pipe(website.highlightCode({selector: 'pre.highlight code'}))
+      .pipe(gulp.dest('build/dist/blog'))
+      .on('end', () => cb())
+});
+----
+
 
 === read-asciidoctor
-TODO
+Read a stream of Asciidoc files and build for each HTML file. If you use code example in your asciidoc we use https://prismjs.com/ to highlight language keywords.
+
+* a templateModel, a structure JSON used after with handlebar and
+* an indexData object used to build an index file used by other extensions
+
+*Example of usage*
+[source,javascript]
+----
+gulp.task('adoc-template', () =>
+  gulp.src(`src/html/**/*.html`)
+      .pipe(website.readAsciidoc())
+      .pipe(website.convertToHtml())
+      .pipe(website.applyTemplate(`src/templates/site.handlebars`))
+      .pipe(gulp.dest('build/dist')));
+----
+
+The JSON templateModel has these values.
+
+* keywords : to provided in a metadata JSON
+* title : to provided in a metadata JSON
+* description : to provided in a metadata JSON
+* contents : read from the file in the stream
+* gendate : current instant
+* filename : name of the future page
+* dir : for asciidoc you can define your page in a subdirectory (usefull for a blog with a subdirectory per year, or by topic)
+* category : to regroup elements
+* teaser: little teaser to introduce the page
+* imgteaser: image to use with this teaser (used on https://www.dev-mind.fr/ to display page blog with all articles)
+* canonicalUrl : computed from the current file path
+* modedev : read in environment variables
+
+When you define a new page in asciidoc you can use these metadata in your header
+
+[source,txt]
+----
+:doctitle: Do your Blog yourself
+:description: Comment construire le blog parfait
+:keywords: Web, Blog, Asciidoc, Asciidoctor, CMS, Clever Cloud
+:author: Guillaume EHRET - Dev-Mind
+:revdate: 2018-01-02
+:category: Web
+:teaser: Début 2017, j'ai choisi de migrer mon blog de Blogspot vers une solution personnalisée à base de Asciidoc. J'ai continué à faire évoluer mon site web pour enfin arriver à une solution qui me satisfait.
+:imgteaser: ../../img/blog/2018/siteweb_00.jpg
+
+Start of your article
+----
+
+In your handlebar template you can use the templateModel property values. For example
+[source,html]
+----
+<html>
+    <head>
+        <title>{{ title }}</title>
+    </head>
+    <body>
+        <h1>{{ title }}</h1>
+        <p><small>{{category}}</small></p>
+        {{content}}
+    </body>
+</html>
+----
 
 === read-html
 Read a stream of HTML files and build for each HTML file
@@ -167,11 +388,27 @@ In your handlebar template you can use the templateModel property values. For ex
 ----
 
 === read-index
+Used to parse a JSON file with metadata and send the content to another extension in file stream in gulp
+
+*Example of usage*
+[source,javascript]
+----
+gulp.task('blog-rss', () =>
+  gulp.src('build/.tmp/blogindex.json')
+      .pipe(website.readIndex())
+      .pipe(website.convertToRss('blog.xml'))
+      .pipe(gulp.dest('build/dist/rss'))
+);
+----
+In this example I read an index written in Json and `read-index` helps to read the content and send it to another extension like `convert-to-rss` for example
+
+=== convert-to-blog-list
 TODO
 
-== Use cases
 
+=== convert-to-blog-page
 TODO
+
 
 == Dev & prod
 

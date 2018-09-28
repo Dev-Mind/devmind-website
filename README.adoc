@@ -1,5 +1,5 @@
 = Module node devmind-website
 
-![Dev-Mind](https://www.dev-mind.fr/img/logo/logo_1500.png)
+image::https://www.dev-mind.fr/img/logo/logo_1500.png[Dev-Mind]
 
 More informations very soon

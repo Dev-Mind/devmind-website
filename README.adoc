@@ -1,5 +1,7 @@
 = Module node devmind-website
 
+image::https://api.travis-ci.org/Dev-Mind/devmind-website.svg?branch=master[Travis status]
+
 image::https://www.dev-mind.fr/img/logo/logo_1500.png[Dev-Mind]
 
 More informations very soon

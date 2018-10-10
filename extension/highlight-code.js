@@ -24,6 +24,14 @@ module.exports = function ({ selector }) {
 
   };
 
+  const updateJava = (html, language) => {
+    if(language === 'java' || language === 'Java'){
+      return html.replace(/<span class=\"token operator\">&amp;<\/span>lt<span class=\"token punctuation\">;<\/span>/g, '&lt;')
+                 .replace(/<span class=\"token operator\">&amp;<\/span>gt<span class=\"token punctuation\">;<\/span>/g, '&gt;')
+    }
+    return html;
+  };
+
   return map((file, next) => {
     const $ = cheerio.load(file.contents.toString(), { decodeEntities: false });
 
@@ -32,7 +40,9 @@ module.exports = function ({ selector }) {
       const language = elem.prop('data-lang');
       const fileContents = elem.html();
       const highlightedContents = Prism.highlight(fileContents,  Prism.languages[language] || Prism.languages.autoit);
-      elem.parent().replaceWith( `<pre class="language-${language}">${updateComment(highlightedContents)}</pre>`);
+      const htmlWithComments = updateComment(highlightedContents, language);
+      const finalHtml = updateJava(htmlWithComments, language);
+      elem.parent().replaceWith( `<pre class="language-${language}">${finalHtml}</pre>`);
       elem.addClass('highlights');
     });
 

@@ -20,7 +20,9 @@ module.exports = function ({ selector }) {
     }
 
     return html.replace(/<span class=\"token operator\">&lt;<\/span>b <span class=\"token keyword\">class<\/span><span class=\"token operator\">=<\/span><span class=\"token string\">\"conum\"<\/span><span class=\"token operator\">><\/span><span class=\"token punctuation\">\(<\/span><span class=\"token number\">/g, startSeparator + ' (')
-               .replace(/<\/span><span class=\"token punctuation\">\)<\/span><span class=\"token operator\">&lt;<\/span><span class=\"token operator\">\/<\/span>b<span class=\"token operator\">><\/span>/g, ')' + endSeparator);
+               .replace(/<span class=\"token operator\">=<\/span><span class=\"token operator\">&amp;<\/span>gt<span class=\"token punctuation\">;<\/span>/g, '=>')
+               .replace(/<span class=\"token punctuation\">\)<\/span><span class=\"token operator\">&lt;<\/span><span class=\"token operator\">\/<\/span>b<span class=\"token operator\">><\/span>/g, ')' + endSeparator);
+
 
   };
 

@@ -54,6 +54,7 @@ module.exports = function (options) {
       title: () => file.attributes.doctitle,
       revdate: () => moment(file.attributes.revdate, 'YYYY-MM-DD').format('DD/MM/YYYY'),
       gendate: () => moment().format('DD/MM/YYYY'),
+      genInstant: () => moment().format('YYYY-MM/DD hh:mm:ss'),
       contents: () => file.contents,
       'github-edit-url': () => file.git.githubEditUrl,
       filename: () => filename,

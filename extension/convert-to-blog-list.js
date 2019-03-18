@@ -35,6 +35,7 @@ module.exports = (options, handlebarsTemplateFile, partials, filename, nbArticle
     title: () => pages[filename].title,
     description: () => pages[filename].description,
     gendate: () => moment().format('DD/MM/YYYY'),
+    genInstant: () => moment().format('YYYY-MM/DD hh:mm:ss'),
     canonicalUrl: () => filename
   };
 

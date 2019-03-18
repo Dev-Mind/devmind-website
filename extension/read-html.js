@@ -38,6 +38,7 @@ module.exports = function (options) {
       description: () => pageMetadata[file.fileName].description,
       contents: () => Buffer.from(html),
       gendate: () => moment().format('DD/MM/YYYY'),
+      genInstant: () => moment().format('YYYY-MM/DD hh:mm:ss'),
       blog: () => pageMetadata[file.fileName].blog,
       canonicalUrl: () => file.fileName,
       modedev: () => options.modeDev,

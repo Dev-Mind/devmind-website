@@ -30,12 +30,14 @@ yarn add https://github.com/Dev-Mind/devmind-website.git#X.Y.Z
 
 Find the good version X.Y.Z on https://github.com/Dev-Mind/devmind-website/releases
 
-To import the module in your gulpfile you can use
+To import the module in your gulpfile.js you can use
 
 [source,javascript]
 ----
-const website = require('devmind-website')();
+const website = require('devmind-website').DevMindGulpBuilder()();
 ----
+
+If you prefer to use Typescript you can read the ./gulpfile.ts[`gulpfile.ts`] used for our tests
 
 You can also send parameters. Below I use the default values
 

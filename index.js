@@ -25,19 +25,17 @@ var defaultOptions = {
 };
 var DevMindGulpBuilder = /** @class */ (function () {
     function DevMindGulpBuilder(givenOptions) {
-        this.options = givenOptions;
-        this.options.path = givenOptions.path || defaultOptions.path;
-        if (!givenOptions.metadata) {
-            this.options.metadata = defaultOptions.metadata;
-        }
-        else {
-            this.options.metadata.rss = givenOptions.metadata.rss || defaultOptions.metadata.rss;
-            this.options.metadata.blog = givenOptions.metadata.blog || defaultOptions.metadata.blog;
-            this.options.metadata.html = givenOptions.metadata.html || defaultOptions.metadata.html;
-            this.options.metadata.sitemap = givenOptions.metadata.sitemap || defaultOptions.metadata.sitemap;
-        }
-        this.options.path = givenOptions.path || defaultOptions.path;
+        this.options = defaultOptions;
         this.options.modeDev = !(process.env.NODE_ENV && process.env.NODE_ENV === 'prod');
+        if (givenOptions) {
+            this.options.path = givenOptions.path || defaultOptions.path;
+            if (givenOptions.metadata) {
+                this.options.metadata.rss = givenOptions.metadata.rss || defaultOptions.metadata.rss;
+                this.options.metadata.blog = givenOptions.metadata.blog || defaultOptions.metadata.blog;
+                this.options.metadata.html = givenOptions.metadata.html || defaultOptions.metadata.html;
+                this.options.metadata.sitemap = givenOptions.metadata.sitemap || defaultOptions.metadata.sitemap;
+            }
+        }
     }
     DevMindGulpBuilder.prototype.applyTemplate = function (handlebarsTemplateFile, partials) {
         return apply_template_1.extApplyTemplate(this.options, handlebarsTemplateFile, partials);

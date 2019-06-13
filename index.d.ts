@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import { HandlebarsTemplate, Options } from "./extension/model";
 export declare class DevMindGulpBuilder {
-    constructor(givenOptions: Options);
+    constructor(givenOptions?: Options);
     private options;
     applyTemplate(handlebarsTemplateFile: string, partials: Array<HandlebarsTemplate>): import("stream").Duplex;
     convertToHtml(): import("stream").Duplex;

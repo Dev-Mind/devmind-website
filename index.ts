@@ -27,16 +27,18 @@ const defaultOptions: Options = {
 
 export class DevMindGulpBuilder {
 
-    constructor(givenOptions: Options) {
+    constructor(givenOptions?: Options) {
         this.options = defaultOptions;
-        this.options.path = givenOptions.path || defaultOptions.path;
-        if (givenOptions.metadata) {
-            this.options.metadata.rss = givenOptions.metadata.rss || defaultOptions.metadata.rss;
-            this.options.metadata.blog = givenOptions.metadata.blog || defaultOptions.metadata.blog;
-            this.options.metadata.html = givenOptions.metadata.html || defaultOptions.metadata.html;
-            this.options.metadata.sitemap = givenOptions.metadata.sitemap || defaultOptions.metadata.sitemap;
-        }
         this.options.modeDev = !(process.env.NODE_ENV && process.env.NODE_ENV === 'prod');
+        if(givenOptions){
+            this.options.path = givenOptions.path || defaultOptions.path;
+            if (givenOptions.metadata) {
+                this.options.metadata.rss = givenOptions.metadata.rss || defaultOptions.metadata.rss;
+                this.options.metadata.blog = givenOptions.metadata.blog || defaultOptions.metadata.blog;
+                this.options.metadata.html = givenOptions.metadata.html || defaultOptions.metadata.html;
+                this.options.metadata.sitemap = givenOptions.metadata.sitemap || defaultOptions.metadata.sitemap;
+            }
+        }
     }
 
     private options: Options;

@@ -6,11 +6,21 @@ This project is used to build the Dev-Mind websites. The aim is to use https://g
 
 image::https://www.dev-mind.fr/img/logo/logo_1500.png[Dev-Mind]
 
-If you want a real example see https://www.dev-mind.fr/
+If you want a real example see https://www.dev-mind.fr/ or https://http://mixteen.org
+
+== Typescript
+
+This library is written with typescript. When Typescript is updated we have to compile the file is js to be able to use them in a project which don't use typescript
+
+To do that run
+
+----
+npm run build
+----
 
 == Use this module
 
-This module is made to be used in a GulpFile. You can read the link:./gulpfile.js[gulpfile.js] used to test the extensions or you can see the gulpfile used on the main Dev-Mind website (https://github.com/Dev-Mind/dev-mind.fr).
+This module is made to be used in a GulpFile. You can read the link:./gulpfile.ts[gulpfile.ts] used to test the extensions or you can see the gulpfile used on the main Dev-Mind website (https://github.com/Dev-Mind/dev-mind.fr).
 
 To install this module use for example with yarn
 

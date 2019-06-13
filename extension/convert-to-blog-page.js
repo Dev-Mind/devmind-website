@@ -1,71 +1,60 @@
 'use strict';
-
-const PluginError = require('plugin-error');
-const handlebars = require('handlebars');
-const fs = require('fs');
-const path = require('path');
-const map = require('map-stream');
-
+exports.__esModule = true;
+var model_1 = require("./model");
+var PluginError = require("plugin-error");
+var handlebars = require("handlebars");
+var fs = require("fs");
+var path = require("path");
+var map_stream_1 = require("./utils/map-stream");
 /**
  * This plugin is used to read the firebase index. The final aim is to generate static page for blog post
  * (everything has to be static for indexing bots)
  */
-module.exports = (options, handlebarsTemplateFile, partials, blogIndexFile) => {
-
-  if (!handlebarsTemplateFile) throw new PluginError('convert-to-blog-page', 'Missing source handlebarsTemplateFile for convert-to-blog-page');
-  if (!blogIndexFile) throw new PluginError('convert-to-blog-page', 'Missing source blogIndexFile for convert-to-blog-page');
-  if (!partials) throw new PluginError('convert-to-blog-page', 'Missing source partials for convert-to-blog-page');
-
-  partials.forEach(partial => handlebars.registerPartial(partial.key, fs.readFileSync(path.resolve(__dirname, options.path, partial.path), 'utf8')));
-  const handlebarsTemplate = handlebars.compile(fs.readFileSync(path.resolve(__dirname, options.path, handlebarsTemplateFile), 'utf8'));
-
-  const blogIndexPath = path.resolve(__dirname, options.path, blogIndexFile);
-  const blogIndex = JSON.parse(fs.readFileSync(blogIndexPath, 'utf8'));
-
-  return map((file, next) => {
-    // We need to find the previous blog post, the current and the next
-    let previousPost;
-    let nextPost;
-
-    blogIndex
-      .sort((a, b) => (a.strdate < b.strdate ? 1 : (a.strdate > b.strdate ? -1 : 0)))
-      .forEach((elt, index, array) => {
-        if (elt.filename === file.templateModel.filename()) {
-
-          nextPost = index > 0 ? array[index - 1] : undefined;
-          previousPost = index < array.length ? array[index + 1] : undefined;
+function extConvertToBlogPage(options, handlebarsTemplateFile, partials, blogIndexFile) {
+    if (!handlebarsTemplateFile)
+        throw new PluginError('convert-to-blog-page', 'Missing source handlebarsTemplateFile for convert-to-blog-page');
+    if (!blogIndexFile)
+        throw new PluginError('convert-to-blog-page', 'Missing source blogIndexFile for convert-to-blog-page');
+    if (!partials)
+        throw new PluginError('convert-to-blog-page', 'Missing source partials for convert-to-blog-page');
+    partials.forEach(function (partial) { return handlebars.registerPartial(partial.key, fs.readFileSync(path.resolve(__dirname, options.path, partial.path), model_1.FILE_ENCODING)); });
+    var handlebarsTemplate = handlebars.compile(fs.readFileSync(path.resolve(__dirname, options.path, handlebarsTemplateFile), model_1.FILE_ENCODING));
+    var blogIndexPath = path.resolve(__dirname, options.path, blogIndexFile);
+    var blogIndex = JSON.parse(fs.readFileSync(blogIndexPath, model_1.FILE_ENCODING));
+    return map_stream_1.mapStream(function (file, next) {
+        // We need to find the previous blog post, the current and the next
+        var previousPost;
+        var nextPost;
+        blogIndex
+            .sort(function (a, b) { return (a.strdate < b.strdate ? 1 : (a.strdate > b.strdate ? -1 : 0)); })
+            .forEach(function (elt, index, array) {
+            if (elt.filename === file.templateModel.filename()) {
+                nextPost = index > 0 ? array[index - 1] : undefined;
+                previousPost = index < array.length ? array[index + 1] : undefined;
+            }
+        });
+        if (previousPost) {
+            file.templateModel.previous = {
+                dir: previousPost.dir,
+                filename: previousPost.filename,
+                doctitle: previousPost.doctitle
+            };
         }
-      });
-
-    if (previousPost) {
-      file.templateModel.previous = {
-        dir: previousPost.dir,
-        filename: previousPost.filename,
-        doctitle: previousPost.doctitle
-      };
-    }
-    if (nextPost) {
-      file.templateModel.next = {
-        dir: nextPost.dir,
-        filename: nextPost.filename,
-        doctitle: nextPost.doctitle
-      };
-    }
-
-    const content = handlebarsTemplate(file.templateModel)
-      .replace('<html><head></head><body>', '')
-      .replace('</body>', '')
-      .replace('</html>', '');
-
-    file.templateModel.contents = file.contents.toString();
-    file.contents = Buffer.from(content);
-
-    next(null, file);
-  });
-};
-
-
-
-
-
-
+        if (nextPost) {
+            file.templateModel.next = {
+                dir: nextPost.dir,
+                filename: nextPost.filename,
+                doctitle: nextPost.doctitle
+            };
+        }
+        var content = handlebarsTemplate(file.templateModel)
+            .replace('<html><head></head><body>', '')
+            .replace('</body>', '')
+            .replace('</html>', '');
+        file.templateModel.contents = file.contents.toString();
+        file.contents = Buffer.from(content);
+        next(null, file);
+    });
+}
+exports.extConvertToBlogPage = extConvertToBlogPage;
+;

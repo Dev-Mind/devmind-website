@@ -1,30 +1,23 @@
 'use strict';
-
-const Vinyl = require('vinyl');
-const through = require('through');
-const PluginError = require('plugin-error');
-
+exports.__esModule = true;
+var Vinyl = require("vinyl");
+var PluginError = require("plugin-error");
+var through_1 = require("./utils/through");
 /**
  * This plugin writes the blog metadata in a local index
  */
-module.exports = function (filename) {
-  if (!filename) throw new PluginError('write-json', 'Missing target filename for convert-to-json');
-
-  let json = [];
-
-  function iterateOnStream(file) {
-    json.push(JSON.stringify(file.indexData));
-  }
-
-  function endStream() {
-    let target = new Vinyl({ path: filename, contents: Buffer.from(`[${json}]`)});
-    this.emit('data', target);
-    this.emit('end');
-  }
-
-  return through(iterateOnStream, endStream);
-};
-
-
-
-
+function extConvertToJson(filename) {
+    if (!filename)
+        throw new PluginError('convertToJson', 'Missing target filename for convert-to-json');
+    var json = [];
+    var iterateOnStream = function (stream, data) {
+        json.push(JSON.stringify(data.indexData));
+    };
+    var endStream = function (stream) {
+        var target = new Vinyl({ path: filename, contents: Buffer.from("[" + json + "]") });
+        stream.emit('data', target);
+        stream.emit('end');
+    };
+    return through_1.through(iterateOnStream, endStream);
+}
+exports.extConvertToJson = extConvertToJson;

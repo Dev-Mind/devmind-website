@@ -1,85 +1,43 @@
 'use strict';
-
-const Vinyl = require('vinyl');
-const through = require('through');
-const path = require('path');
-const fs = require('fs');
-const fileExist = require('./file-exist');
-
+exports.__esModule = true;
+var model_1 = require("./model");
+var PluginError = require("plugin-error");
+var Vinyl = require("vinyl");
+var fs = require("fs");
+var path = require("path");
+var file_exist_1 = require("./file-exist");
+var through_1 = require("./utils/through");
 /**
  * This plugin parse indexes (blog + page) and create a sitemap for bot indexer
  */
-module.exports = function (options) {
-
-  const pagesPath = path.resolve(__dirname, options.path, options.metadata.sitemap);
-  if(!fileExist(pagesPath)){
-    throw new PluginError('convert-to-sitemap', `Missing metadata page with all blog descriptions. Define this file. The default path is ${options.metadata.rss}`);
-  }
-  const siteMetadata =  JSON.parse(fs.readFileSync(pagesPath, 'utf8'));
-
-
-  let xml= ``;
-
-  function createUrlNode(metadata){
-    if(!!metadata.priority && metadata.priority < 0){
-      return '';
+function extConvertToSitemap(options) {
+    var pagesPath = path.resolve(__dirname, options.path, options.metadata.sitemap);
+    if (!file_exist_1.extFileExist(pagesPath)) {
+        throw new PluginError('convert-to-sitemap', "Missing metadata page with all blog descriptions. Define this file. The default path is " + options.metadata.rss);
     }
-    if(metadata.blog){
-      return `<url>
-        <loc>${siteMetadata.url}/blog/${metadata.dir}/${metadata.filename}.html</loc>
-        <changefreq>weekly</changefreq>
-        <priority>0.3</priority>
-        <news:news>
-          <news:publication>
-              <news:name>${siteMetadata.name}</news:name>
-              <news:language>fr</news:language>
-          </news:publication>
-          <news:genres>Blog</news:genres>
-          <news:publication_date>${metadata.revdate}</news:publication_date>
-          <news:title>${metadata.doctitle}</news:title>
-          <news:keywords>${metadata.keywords}</news:keywords>
-          <news:stock_tickers>${metadata.category}</news:stock_tickers>
-        </news:news>
-    </url>`;
+    var siteMetadata = JSON.parse(fs.readFileSync(pagesPath, model_1.FILE_ENCODING));
+    var xml = "";
+    function createUrlNode(metadata) {
+        if (!!metadata.priority && metadata.priority < 0) {
+            return '';
+        }
+        if (metadata.blog) {
+            return "<url>\n        <loc>" + siteMetadata.url + "/blog/" + metadata.dir + "/" + metadata.filename + ".html</loc>\n        <changefreq>weekly</changefreq>\n        <priority>0.3</priority>\n        <news:news>\n          <news:publication>\n              <news:name>" + siteMetadata.name + "</news:name>\n              <news:language>fr</news:language>\n          </news:publication>\n          <news:genres>Blog</news:genres>\n          <news:publication_date>" + metadata.revdate + "</news:publication_date>\n          <news:title>" + metadata.doctitle + "</news:title>\n          <news:keywords>" + metadata.keywords + "</news:keywords>\n          <news:stock_tickers>" + metadata.category + "</news:stock_tickers>\n        </news:news>\n    </url>";
+        }
+        return "<url>\n        <loc>" + siteMetadata.url + "/" + metadata.filename + ".html</loc>\n        <changefreq>weekly</changefreq>\n        <priority>" + (metadata.priority ? metadata.priority : 0.3) + "</priority>\n    </url>";
     }
-    return `<url>
-        <loc>${siteMetadata.url}/${metadata.filename}.html</loc>
-        <changefreq>weekly</changefreq>
-        <priority>${metadata.priority ? metadata.priority : 0.3}</priority>
-    </url>`;
-  }
-
-  function iterateOnStream(file) {
-    xml += file
-      .map(metadata => createUrlNode(metadata))
-      .reduce((a, b) => a + b);
-  }
-
-  function endStream() {
-    const fileContent = `<?xml version="1.0" encoding="UTF-8"?>
-      <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
-        <url>
-          <loc>${siteMetadata.url}/</loc>
-          <changefreq>weekly</changefreq>
-          <priority>1</priority>
-        </url>
-        <url>
-          <loc>${siteMetadata.url}/blog.html</loc>
-          <changefreq>weekly</changefreq>
-          <priority>0.9</priority>
-        </url>
-        <url>
-          <loc>${siteMetadata.url}/blog_archive.html</loc>
-          <changefreq>weekly</changefreq>
-          <priority>0.9</priority>
-        </url>
-        ${xml}
-      </urlset>`;
-
-    let target = new Vinyl({ path: 'sitemap.xml',  contents: Buffer.from(fileContent)});
-    this.emit('data', target);
-    this.emit('end');
-  }
-
-  return through(iterateOnStream, endStream);
-};
+    function iterateOnStream(stream, data) {
+        xml += data.length === 0 ? '' : data
+            .map(function (metadata) { return createUrlNode(metadata); })
+            .reduce(function (a, b) { return a + b; });
+    }
+    function endStream(stream) {
+        var fileContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n      <urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:news=\"http://www.google.com/schemas/sitemap-news/0.9\">\n        <url>\n          <loc>" + siteMetadata.url + "/</loc>\n          <changefreq>weekly</changefreq>\n          <priority>1</priority>\n        </url>\n        <url>\n          <loc>" + siteMetadata.url + "/blog.html</loc>\n          <changefreq>weekly</changefreq>\n          <priority>0.9</priority>\n        </url>\n        <url>\n          <loc>" + siteMetadata.url + "/blog_archive.html</loc>\n          <changefreq>weekly</changefreq>\n          <priority>0.9</priority>\n        </url>\n        " + xml + "\n      </urlset>";
+        var target = new Vinyl({ path: 'sitemap.xml', contents: Buffer.from(fileContent) });
+        stream.emit('data', target);
+        stream.emit('end');
+    }
+    return through_1.through(iterateOnStream, endStream);
+}
+exports.extConvertToSitemap = extConvertToSitemap;
+;

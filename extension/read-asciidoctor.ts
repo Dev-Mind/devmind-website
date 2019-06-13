@@ -1,15 +1,19 @@
 'use strict';
-exports.__esModule = true;
-var time_1 = require("./utils/time");
-var map_stream_1 = require("./utils/map-stream");
-var asciidoctorOptions = {
+
+import {convertDateEn, currentDate, currentDateIso} from "./utils/time";
+import {IndexBlogData, Options} from "./model";
+import {mapStream} from "./utils/map-stream";
+
+
+const asciidoctorOptions = {
     safe: 'safe',
     doctype: 'article',
     header_footer: false,
     attributes: {
-        imagesdir: '/assets/images'
-    }
+        imagesdir: '/assets/images',
+    },
 };
+
 /**
  * Read a stream of Asciidoc files and build for each HTML file. If you use code example in your asciidoc a feature to highlight language keywords.
  * - a templateModel, a structure JSON used after with handlebar and
@@ -27,26 +31,33 @@ var asciidoctorOptions = {
  * @param options
  * @return stream
  */
-function extReadAsciidoc(options) {
-    var asciidoctor = require(options.path + "node_modules/asciidoctor.js/dist/node/asciidoctor")();
-    return map_stream_1.mapStream(function (file, next) {
-        var opts = Object.assign({}, asciidoctorOptions, {});
+export function extReadAsciidoc(options: Options) {
+
+    const asciidoctor = require(`${options.path}node_modules/asciidoctor.js/dist/node/asciidoctor`)();
+
+    return mapStream((file, next) => {
+
+        const opts = Object.assign({}, asciidoctorOptions, {});
         opts.attributes = Object.assign({}, opts.attributes);
-        var asciidoc = file.contents.toString();
+
+        const asciidoc = file.contents.toString();
         file.ast = asciidoctor.load(asciidoc, opts);
         file.attributes = file.ast.getAttributes();
         file.attributes.strdate = file.attributes.revdate;
-        var filename = file.path.substring(file.path.lastIndexOf("/") + 1, file.path.lastIndexOf("."));
-        var dir = '';
+
+        const filename = file.path.substring(file.path.lastIndexOf("/") + 1, file.path.lastIndexOf("."));
+
+        let dir = '';
         if (file.path.lastIndexOf("blog/") > 0) {
             dir = file.path.substring(file.path.lastIndexOf("blog/") + "blog/".length, file.path.lastIndexOf("/"));
         }
         if (file.path.lastIndexOf("training/") > 0) {
             dir = file.path.substring(file.path.lastIndexOf("training/") + "training/".length, file.path.lastIndexOf("/"));
         }
-        var indexData = {
-            strdate: time_1.currentDate(),
-            revdate: time_1.convertDateEn(file.attributes.revdate),
+
+        const indexData: IndexBlogData = {
+            strdate: currentDate(),
+            revdate: convertDateEn(file.attributes.revdate),
             description: file.attributes.description,
             doctitle: file.attributes.doctitle,
             keywords: file.attributes.keywords.split(","),
@@ -59,29 +70,33 @@ function extReadAsciidoc(options) {
             dir: dir,
             priority: 0.6
         };
+
         // make all model properties accessible through fat-arrow "getters"
         // this way, file.* values can be changed before templating
         file.templateModel = {
-            keywords: function () { return indexData.keywords; },
-            title: function () { return indexData.doctitle; },
-            revdate: function () { return indexData.revdate; },
-            gendate: function () { return indexData.strdate; },
-            genInstant: function () { return time_1.currentDateIso(); },
-            contents: function () { return file.contents; },
-            'github-edit-url': function () { return file.git.githubEditUrl; },
-            filename: function () { return indexData.filename; },
-            dir: function () { return indexData.dir; },
-            category: function () { return indexData.category; },
-            teaser: function () { return indexData.teaser; },
-            imgteaser: function () { return indexData.imgteaser; },
-            status: function () { return file.attributes.status; },
-            modedev: function () { return indexData.modeDev; },
-            canonicalUrl: function () { return "blog/" + dir + "/" + filename + ".html"; }
+            keywords: () => indexData.keywords,
+            title: () => indexData.doctitle,
+            revdate: () => indexData.revdate,
+            gendate: () => indexData.strdate,
+            genInstant: () => currentDateIso(),
+            contents: () => file.contents,
+            'github-edit-url': () => file.git.githubEditUrl,
+            filename: () => indexData.filename,
+            dir: () => indexData.dir,
+            category: () => indexData.category,
+            teaser: () => indexData.teaser,
+            imgteaser: () => indexData.imgteaser,
+            status: () => file.attributes.status,
+            modedev: () => indexData.modeDev,
+            canonicalUrl: () => `blog/${dir}/${filename}.html`
         };
+
         if (file.attributes.status !== 'draft') {
             file.indexData = indexData;
         }
+
         next(null, file);
     });
 }
-exports.extReadAsciidoc = extReadAsciidoc;
+
+

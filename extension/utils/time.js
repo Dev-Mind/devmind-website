@@ -1,0 +1,10 @@
+"use strict";
+exports.__esModule = true;
+var moment = require("moment");
+exports.DATE_FORMAT = 'DD/MM/YYYY';
+exports.DATE_EN_FORMAT = 'YYYY-MM-DD';
+exports.DATE_ISO_FORMAT = 'YYYY-MM-DD hh:mm:ss';
+exports.currentDate = function () { return moment().format(exports.DATE_FORMAT); };
+exports.currentDateEn = function () { return moment().format(exports.DATE_EN_FORMAT); };
+exports.currentDateIso = function () { return moment().format(exports.DATE_ISO_FORMAT); };
+exports.convertDateEn = function (date) { return moment(date, exports.DATE_EN_FORMAT).format(exports.DATE_FORMAT); };

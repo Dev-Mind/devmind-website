@@ -1,65 +1,37 @@
 'use strict';
-
-const Vinyl = require('vinyl');
-const through = require('through');
-const PluginError = require('plugin-error');
-const moment = require('moment');
-const path = require('path');
-const fs = require('fs');
-const fileExist = require('./file-exist');
-
+exports.__esModule = true;
+var model_1 = require("./model");
+var time_1 = require("./utils/time");
+var Vinyl = require("vinyl");
+var PluginError = require("plugin-error");
+var fs = require("fs");
+var path = require("path");
+var file_exist_1 = require("./file-exist");
+var through_1 = require("./utils/through");
 /**
  * This plugin parse all the asciidoc files to build a Rss XML descriptor
  */
-module.exports = function (options, filename) {
-
-  const pagesPath = path.resolve(__dirname, options.path, options.metadata.rss);
-  if(!fileExist(pagesPath)){
-    throw new PluginError('convert-to-rss', `Missing metadata page with all blog descriptions. Define this file. The default path is ${options.metadata.rss}`);
-  }
-  const rssMetadata =  JSON.parse(fs.readFileSync(pagesPath, 'utf8'));
-
-  if (!filename) throw new PluginError('convert-to-rss', 'Missing target filename for asciidoctor-rss');
-
-  let xml= '';
-
-  function iterateOnStream(file) {
-    const content = file
-      .map(metadata => `
-          <item>
-            <link>${rssMetadata.blogurl}/${metadata.dir}/${metadata.filename}.html</link>
-            <title>${metadata.doctitle}</title>
-            <description>${metadata.teaser}</description>
-            <pubDate>${moment(metadata.revdate, 'YYYY-mm-DD').format('DD/mm/YYYY')}</pubDate>
-            <enclosure url="${rssMetadata.blogimgurl}/${metadata.dir}/${metadata.imgteaser}"/>
-          </item>
-        `)
-      .reduce((a, b) => a + b);
-
-    xml = `
-        <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
-            <channel>
-                <title>${rssMetadata.title}</title>
-                <description>${rssMetadata.description}</description>
-                <copyright>${rssMetadata.copyright}</copyright>
-                <link>${rssMetadata.blogurl}</link>
-                <atom:link href="${rssMetadata.blogurl}" rel="self" type="application/rss+xml"/>
-                <pubDate>${moment().format('YYYY-MM-DD hh:mm:ss')}</pubDate>
-                <image>
-                  <url>${rssMetadata.logourl}</url>
-                  <title>${rssMetadata.shorttile}</title>
-                  <link>${rssMetadata.blogurl}</link>
-                </image>
-                ${content}
-            </channel>
-        </rss>`;
+function extConvertToRss(options, filename) {
+    var pagesPath = path.resolve(__dirname, options.path, options.metadata.rss);
+    if (!file_exist_1.extFileExist(pagesPath)) {
+        throw new PluginError('convert-to-rss', "Missing metadata page with all blog descriptions. Define this file. The default path is " + options.metadata.rss);
     }
-
-  function endStream() {
-    let target = new Vinyl({ path: filename, contents: Buffer.from(xml)});
-    this.emit('data', target);
-    this.emit('end');
-  }
-
-  return through(iterateOnStream, endStream);
-};
+    var rssMetadata = JSON.parse(fs.readFileSync(pagesPath, model_1.FILE_ENCODING));
+    if (!filename)
+        throw new PluginError('convert-to-rss', 'Missing target filename for asciidoctor-rss');
+    var xml = '';
+    function iterateOnStream(stream, data) {
+        var content = data.length === 0 ? '' : data
+            .map(function (metadata) { return "\n          <item>\n            <link>" + rssMetadata.blogurl + "/" + metadata.dir + "/" + metadata.filename + ".html</link>\n            <title>" + metadata.doctitle + "</title>\n            <description>" + metadata.teaser + "</description>\n            <pubDate>" + time_1.convertDateEn(metadata.revdate) + "</pubDate>\n            <enclosure url=\"" + rssMetadata.blogimgurl + "/" + metadata.dir + "/" + metadata.imgteaser + "\"/>\n          </item>\n        "; })
+            .reduce(function (a, b) { return a + b; });
+        xml = "\n        <rss xmlns:atom=\"http://www.w3.org/2005/Atom\" version=\"2.0\">\n            <channel>\n                <title>" + rssMetadata.title + "</title>\n                <description>" + rssMetadata.description + "</description>\n                <copyright>" + rssMetadata.copyright + "</copyright>\n                <link>" + rssMetadata.blogurl + "</link>\n                <atom:link href=\"" + rssMetadata.blogurl + "\" rel=\"self\" type=\"application/rss+xml\"/>\n                <pubDate>" + time_1.currentDateIso() + "</pubDate>\n                <image>\n                  <url>" + rssMetadata.logourl + "</url>\n                  <title>" + rssMetadata.shorttile + "</title>\n                  <link>" + rssMetadata.blogurl + "</link>\n                </image>\n                " + content + "\n            </channel>\n        </rss>";
+    }
+    function endStream(stream) {
+        var target = new Vinyl({ path: filename, contents: Buffer.from(xml) });
+        stream.emit('data', target);
+        stream.emit('end');
+    }
+    return through_1.through(iterateOnStream, endStream);
+}
+exports.extConvertToRss = extConvertToRss;
+;

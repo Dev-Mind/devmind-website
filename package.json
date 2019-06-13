@@ -4,7 +4,8 @@
   "description": "Gulp extensions to generate a website with blog pages written in asciidoc",
   "main": "index.js",
   "scripts": {
-    "test": "gulp"
+    "test": "gulp",
+    "build": "./node_modules/typescript/bin/tsc --declaration index.ts"
   },
   "repository": {
     "type": "git",
@@ -24,21 +25,21 @@
   },
   "homepage": "https://github.com/Dev-Mind/devmind-website#readme",
   "devDependencies": {
-    "gulp": "4.0.0",
-    "gulp-cli": "^2.0.1",
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "gulp": "^4.0.2"
   },
   "dependencies": {
-    "asciidoctor.js": "^1.5.6-preview.3",
+    "@types/gulp": "^4.0.6",
+    "asciidoctor.js": "^1.5.9",
     "cheerio": "^0.22.0",
     "fs": "^0.0.1-security",
     "graceful-fs": "^4.1.11",
     "handlebars": "^4.0.12",
     "highlight.js": "^9.15.8",
-    "map-stream": "^0.0.7",
     "moment": "^2.18.1",
     "node-prismjs": "^0.1.2",
     "plugin-error": "^1.0.1",
-    "through": "^2.3.8"
+    "ts-node": "^8.1.0",
+    "typescript": "~3.4.2"
   }
 }

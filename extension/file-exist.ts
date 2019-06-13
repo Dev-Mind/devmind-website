@@ -1,6 +1,7 @@
 'use strict';
-exports.__esModule = true;
-var fs = require("fs");
+
+import * as fs from 'fs';
+
 /**
  * This extension return true if the file exists
  *
@@ -14,13 +15,12 @@ var fs = require("fs");
  * @param filePath
  * @return boolean
  */
-function extFileExist(filePath) {
+export function extFileExist(filePath: string): boolean {
     try {
         fs.accessSync(filePath);
         return true;
-    }
-    catch (e) {
+    } catch (e) {
         return false;
     }
 }
-exports.extFileExist = extFileExist;
+

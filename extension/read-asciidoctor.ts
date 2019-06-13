@@ -43,7 +43,6 @@ export function extReadAsciidoc(options: Options) {
         const asciidoc = file.contents.toString();
         file.ast = asciidoctor.load(asciidoc, opts);
         file.attributes = file.ast.getAttributes();
-        file.attributes.strdate = file.attributes.revdate;
 
         const filename = file.path.substring(file.path.lastIndexOf("/") + 1, file.path.lastIndexOf("."));
 
@@ -56,7 +55,7 @@ export function extReadAsciidoc(options: Options) {
         }
 
         const indexData: IndexBlogData = {
-            strdate: currentDate(),
+            strdate: file.attributes.revdate,
             revdate: convertDateEn(file.attributes.revdate),
             description: file.attributes.description,
             doctitle: file.attributes.doctitle,

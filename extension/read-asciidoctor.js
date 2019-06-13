@@ -35,7 +35,6 @@ function extReadAsciidoc(options) {
         var asciidoc = file.contents.toString();
         file.ast = asciidoctor.load(asciidoc, opts);
         file.attributes = file.ast.getAttributes();
-        file.attributes.strdate = file.attributes.revdate;
         var filename = file.path.substring(file.path.lastIndexOf("/") + 1, file.path.lastIndexOf("."));
         var dir = '';
         if (file.path.lastIndexOf("blog/") > 0) {
@@ -45,7 +44,7 @@ function extReadAsciidoc(options) {
             dir = file.path.substring(file.path.lastIndexOf("training/") + "training/".length, file.path.lastIndexOf("/"));
         }
         var indexData = {
-            strdate: time_1.currentDate(),
+            strdate: file.attributes.revdate,
             revdate: time_1.convertDateEn(file.attributes.revdate),
             description: file.attributes.description,
             doctitle: file.attributes.doctitle,

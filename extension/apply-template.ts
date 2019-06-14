@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as PluginError from 'plugin-error';
 import {mapStream} from './utils/map-stream';
+import {Duplex} from "stream";
 
 /**
  * Used to apply a handlebar template on a file stream. This extension has to be applied after `read-html` or
@@ -28,26 +29,26 @@ import {mapStream} from './utils/map-stream';
  */
 export function extApplyTemplate(options: Options,
                                  handlebarsTemplateFile: string,
-                                 partials: Array<HandlebarsTemplate>) {
+                                 partials: Array<HandlebarsTemplate>): Duplex {
 
-    const handlebarsTemplatePath = path.resolve(__dirname, options.path, handlebarsTemplateFile);
-    if (!extFileExist(handlebarsTemplatePath)) {
-        throw new PluginError('apply-template',
-            `handlebars template ${handlebarsTemplatePath} is required`);
-    }
+  const handlebarsTemplatePath = path.resolve(__dirname, options.path, handlebarsTemplateFile);
+  if (!extFileExist(handlebarsTemplatePath)) {
+    throw new PluginError('apply-template',
+      `handlebars template ${handlebarsTemplatePath} is required`);
+  }
 
-    if (partials) {
-        partials.forEach(partial => handlebars.registerPartial(
-            partial.key,
-            fs.readFileSync(path.resolve(__dirname, options.path, partial.path),
-                FILE_ENCODING)));
-    }
+  if (partials) {
+    partials.forEach(partial => handlebars.registerPartial(
+      partial.key,
+      fs.readFileSync(path.resolve(__dirname, options.path, partial.path),
+        FILE_ENCODING)));
+  }
 
-    const handlebarsTemplate = handlebars.compile(fs.readFileSync(handlebarsTemplatePath, FILE_ENCODING));
+  const handlebarsTemplate = handlebars.compile(fs.readFileSync(handlebarsTemplatePath, FILE_ENCODING));
 
-    return mapStream(async (file, next) => {
-        file.contents = Buffer.from(handlebarsTemplate(file.templateModel));
-        next(null, file);
-    });
+  return mapStream(async (file, next) => {
+    file.contents = Buffer.from(handlebarsTemplate(file.templateModel));
+    next(null, file);
+  });
 }
 

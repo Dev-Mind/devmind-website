@@ -2,6 +2,7 @@
 
 
 import {mapStream} from "./utils/map-stream";
+import {Duplex} from "stream";
 
 /**
  * Used to parse a JSON file with metadata and send the content to another extension in file stream in gulp
@@ -16,8 +17,8 @@ import {mapStream} from "./utils/map-stream";
  * In this example I read an index written in Json and `read-index` helps to read the content and send it to another
  * extension like `convert-to-rss` for example
  */
-export function extReadIndex() {
-    return mapStream(async (file, next) => next(null, JSON.parse(file.contents)));
+export function extReadIndex(): Duplex {
+  return mapStream(async (file, next) => next(null, JSON.parse(file.contents)));
 }
 
 

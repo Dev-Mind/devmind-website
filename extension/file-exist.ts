@@ -16,11 +16,11 @@ import * as fs from 'fs';
  * @return boolean
  */
 export function extFileExist(filePath: string): boolean {
-    try {
-        fs.accessSync(filePath);
-        return true;
-    } catch (e) {
-        return false;
-    }
+  try {
+    fs.accessSync(filePath);
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
 

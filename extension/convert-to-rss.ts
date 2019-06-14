@@ -14,21 +14,21 @@ import {Duplex} from "stream";
 /**
  * This plugin parse all the asciidoc files to build a Rss XML descriptor
  */
-export function extConvertToRss(options: Options, filename: string) {
+export function extConvertToRss(options: Options, filename: string): Duplex {
 
-    const pagesPath = path.resolve(__dirname, options.path, options.metadata.rss);
-    if (!extFileExist(pagesPath)) {
-        throw new PluginError('convert-to-rss', `Missing metadata page with all blog descriptions. Define this file. The default path is ${options.metadata.rss}`);
-    }
-    const rssMetadata = JSON.parse(fs.readFileSync(pagesPath, FILE_ENCODING));
+  const pagesPath = path.resolve(__dirname, options.path, options.metadata.rss);
+  if (!extFileExist(pagesPath)) {
+    throw new PluginError('convert-to-rss', `Missing metadata page with all blog descriptions. Define this file. The default path is ${options.metadata.rss}`);
+  }
+  const rssMetadata = JSON.parse(fs.readFileSync(pagesPath, FILE_ENCODING));
 
-    if (!filename) throw new PluginError('convert-to-rss', 'Missing target filename for asciidoctor-rss');
+  if (!filename) throw new PluginError('convert-to-rss', 'Missing target filename for asciidoctor-rss');
 
-    let xml = '';
+  let xml = '';
 
-    function iterateOnStream(stream, data) {
-        const content = data.length === 0 ? '' : data
-            .map(metadata => `
+  function iterateOnStream(stream, data) {
+    const content = data.length === 0 ? '' : data
+      .map(metadata => `
           <item>
             <link>${rssMetadata.blogurl}/${metadata.dir}/${metadata.filename}.html</link>
             <title>${metadata.doctitle}</title>
@@ -37,9 +37,9 @@ export function extConvertToRss(options: Options, filename: string) {
             <enclosure url="${rssMetadata.blogimgurl}/${metadata.dir}/${metadata.imgteaser}"/>
           </item>
         `)
-            .reduce((a, b) => a + b);
+      .reduce((a, b) => a + b);
 
-        xml = `
+    xml = `
         <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
             <channel>
                 <title>${rssMetadata.title}</title>
@@ -56,13 +56,13 @@ export function extConvertToRss(options: Options, filename: string) {
                 ${content}
             </channel>
         </rss>`;
-    }
+  }
 
-    function endStream(stream: Duplex) {
-        let target = new Vinyl({path: filename, contents: Buffer.from(xml)});
-        stream.emit('data', target);
-        stream.emit('end');
-    }
+  function endStream(stream: Duplex) {
+    let target = new Vinyl({path: filename, contents: Buffer.from(xml)});
+    stream.emit('data', target);
+    stream.emit('end');
+  }
 
-    return through(iterateOnStream, endStream);
+  return through(iterateOnStream, endStream);
 };

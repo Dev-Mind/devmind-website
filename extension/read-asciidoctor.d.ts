@@ -1,5 +1,6 @@
 /// <reference types="node" />
 import { Options } from "./model";
+import { Duplex } from "stream";
 /**
  * Read a stream of Asciidoc files and build for each HTML file. If you use code example in your asciidoc a feature to highlight language keywords.
  * - a templateModel, a structure JSON used after with handlebar and
@@ -17,4 +18,4 @@ import { Options } from "./model";
  * @param options
  * @return stream
  */
-export declare function extReadAsciidoc(options: Options): import("stream").Duplex;
+export declare function extReadAsciidoc(options: Options): Duplex;

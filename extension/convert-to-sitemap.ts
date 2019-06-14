@@ -13,23 +13,23 @@ import {Duplex} from "stream";
 /**
  * This plugin parse indexes (blog + page) and create a sitemap for bot indexer
  */
-export function extConvertToSitemap(options: Options) {
+export function extConvertToSitemap(options: Options): Duplex {
 
-    const pagesPath = path.resolve(__dirname, options.path, options.metadata.sitemap);
-    if (!extFileExist(pagesPath)) {
-        throw new PluginError('convert-to-sitemap', `Missing metadata page with all blog descriptions. Define this file. The default path is ${options.metadata.rss}`);
+  const pagesPath = path.resolve(__dirname, options.path, options.metadata.sitemap);
+  if (!extFileExist(pagesPath)) {
+    throw new PluginError('convert-to-sitemap', `Missing metadata page with all blog descriptions. Define this file. The default path is ${options.metadata.rss}`);
+  }
+  const siteMetadata = JSON.parse(fs.readFileSync(pagesPath, FILE_ENCODING));
+
+
+  let xml = ``;
+
+  function createUrlNode(metadata) {
+    if (!!metadata.priority && metadata.priority < 0) {
+      return '';
     }
-    const siteMetadata = JSON.parse(fs.readFileSync(pagesPath, FILE_ENCODING));
-
-
-    let xml = ``;
-
-    function createUrlNode(metadata) {
-        if (!!metadata.priority && metadata.priority < 0) {
-            return '';
-        }
-        if (metadata.blog) {
-            return `<url>
+    if (metadata.blog) {
+      return `<url>
         <loc>${siteMetadata.url}/blog/${metadata.dir}/${metadata.filename}.html</loc>
         <changefreq>weekly</changefreq>
         <priority>0.3</priority>
@@ -45,22 +45,22 @@ export function extConvertToSitemap(options: Options) {
           <news:stock_tickers>${metadata.category}</news:stock_tickers>
         </news:news>
     </url>`;
-        }
-        return `<url>
+    }
+    return `<url>
         <loc>${siteMetadata.url}/${metadata.filename}.html</loc>
         <changefreq>weekly</changefreq>
         <priority>${metadata.priority ? metadata.priority : 0.3}</priority>
     </url>`;
-    }
+  }
 
-    function iterateOnStream(stream: Duplex, data) {
-        xml += data.length === 0 ? '' : data
-            .map(metadata => createUrlNode(metadata))
-            .reduce((a, b) => a + b);
-    }
+  function iterateOnStream(stream: Duplex, data) {
+    xml += data.length === 0 ? '' : data
+      .map(metadata => createUrlNode(metadata))
+      .reduce((a, b) => a + b);
+  }
 
-    function endStream(stream: Duplex) {
-        const fileContent = `<?xml version="1.0" encoding="UTF-8"?>
+  function endStream(stream: Duplex) {
+    const fileContent = `<?xml version="1.0" encoding="UTF-8"?>
       <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
         <url>
           <loc>${siteMetadata.url}/</loc>
@@ -80,10 +80,10 @@ export function extConvertToSitemap(options: Options) {
         ${xml}
       </urlset>`;
 
-        let target = new Vinyl({path: 'sitemap.xml', contents: Buffer.from(fileContent)});
-        stream.emit('data', target);
-        stream.emit('end');
-    }
+    let target = new Vinyl({path: 'sitemap.xml', contents: Buffer.from(fileContent)});
+    stream.emit('data', target);
+    stream.emit('end');
+  }
 
-    return through(iterateOnStream, endStream);
+  return through(iterateOnStream, endStream);
 };

@@ -5,14 +5,14 @@ import {Duplex} from 'stream';
  * Filter will reemit the data if cb(err,pass) pass is truthy
  * @param mapper
  */
-export function mapStream(mapper): Duplex{
+export function mapStream(mapper): Duplex {
   let inputs = 0
-      , outputs = 0
-      , ended = false
-      , paused = false
-      , destroyed = false
-      , lastWritten = 0
-      , inNext = false;
+    , outputs = 0
+    , ended = false
+    , paused = false
+    , destroyed = false
+    , lastWritten = 0
+    , inNext = false;
 
 
   const stream = new Duplex();
@@ -31,8 +31,8 @@ export function mapStream(mapper): Duplex{
       if (data !== undefined) {
         stream.emit.apply(stream, ['data', data]);
       }
-      lastWritten ++;
-      nextToWrite ++;
+      lastWritten++;
+      nextToWrite++;
     } else {
       // Otherwise queue it for later.
       writeQueue[number] = data;
@@ -44,13 +44,13 @@ export function mapStream(mapper): Duplex{
       delete writeQueue[nextToWrite];
       return queueData(dataToWrite, nextToWrite);
     }
-    outputs ++;
-    if(inputs === outputs) {
-      if(paused) {
+    outputs++;
+    if (inputs === outputs) {
+      if (paused) {
         paused = false;
         stream.emit('drain');
       }
-      if(ended){
+      if (ended) {
         end();
       }
     }
@@ -60,7 +60,7 @@ export function mapStream(mapper): Duplex{
     //if end was called with args, write it,
     ended = true; //write will emit 'end' if ended is true
     stream.writable = false;
-    if(data !== undefined) {
+    if (data !== undefined) {
       return queueData(data, inputs);
     } else if (inputs == outputs) { //wait for processing
       stream.readable = false;
@@ -70,13 +70,13 @@ export function mapStream(mapper): Duplex{
   };
 
   const next = (err, data?, number?) => {
-    if(destroyed) return;
+    if (destroyed) return;
     inNext = true;
     if (!err) {
       queueData(data, number);
     }
     if (err) {
-      stream.emit.apply(stream, [ 'error', err ]);
+      stream.emit.apply(stream, ['error', err]);
     }
     inNext = false;
   };
@@ -85,12 +85,12 @@ export function mapStream(mapper): Duplex{
   // the item in the stream.
   const wrappedMapper = (input, number, callback) => mapper.call(null, input, (err, data) => callback(err, data, number));
 
-  stream.write =  (data) => {
-    if(ended) {
+  stream.write = (data) => {
+    if (ended) {
       throw new Error('map stream is not writable');
     }
     inNext = false;
-    inputs ++;
+    inputs++;
     try {
       //catch sync errors and handle them like async errors
       const written = wrappedMapper(data, inputs, next);
@@ -99,7 +99,7 @@ export function mapStream(mapper): Duplex{
     } catch (err) {
       //if the callback has been called syncronously, and the error
       //has occured in an listener, throw it again.
-      if(inNext){
+      if (inNext) {
         throw err;
       }
       next(err);
@@ -107,18 +107,18 @@ export function mapStream(mapper): Duplex{
     }
   };
   stream.end = (data) => {
-    if(ended) return;
+    if (ended) return;
     end(data);
   };
 
   stream.destroy = () => {
     ended = destroyed = true;
     stream.writable = stream.readable = paused = false;
-    process.nextTick( () => {
+    process.nextTick(() => {
       stream.emit('close')
     })
   };
-  stream.pause =  () => {
+  stream.pause = () => {
     paused = true;
     return stream;
   };

@@ -1,4 +1,5 @@
 /// <reference types="node" />
+import { Duplex } from "stream";
 /**
  * Used to parse a JSON file with metadata and send the content to another extension in file stream in gulp
  *
@@ -12,4 +13,4 @@
  * In this example I read an index written in Json and `read-index` helps to read the content and send it to another
  * extension like `convert-to-rss` for example
  */
-export declare function extReadIndex(): import("stream").Duplex;
+export declare function extReadIndex(): Duplex;

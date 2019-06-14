@@ -1,3 +1,4 @@
 /// <reference types="node" />
 import { Options } from "./model";
-export declare function extFilesExist(options: Options): import("stream").Duplex;
+import { Duplex } from "stream";
+export declare function extFilesExist(options: Options): Duplex;

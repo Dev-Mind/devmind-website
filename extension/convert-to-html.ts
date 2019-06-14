@@ -1,6 +1,7 @@
 'use strict';
 
 import {mapStream} from "./utils/map-stream";
+import {Duplex} from "stream";
 
 /**
  * Used to change Asciidoc file extension to html
@@ -14,13 +15,13 @@ import {mapStream} from "./utils/map-stream";
  * ----
  * @returns {stream}
  */
-export function extConvertToHtml() {
+export function extConvertToHtml(): Duplex {
 
-    return mapStream((file, next) => {
-        const html = file.ast.convert();
-        file.contents = Buffer.from(html);
-        file.extname = '.html';
-        file.path = file.path.replace('.adoc', '.html');
-        next(null, file);
-    });
+  return mapStream((file, next) => {
+    const html = file.ast.convert();
+    file.contents = Buffer.from(html);
+    file.extname = '.html';
+    file.path = file.path.replace('.adoc', '.html');
+    next(null, file);
+  });
 }

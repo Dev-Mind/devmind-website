@@ -9,6 +9,8 @@ import * as path from 'path';
 import {extFileExist} from "./file-exist";
 import {through} from './utils/through';
 import {Duplex} from "stream";
+import * as moment from "moment";
+import {DATE_EN_FORMAT} from "./utils/time";
 
 /**
  * This plugin parse indexes (blog + page) and create a sitemap for bot indexer
@@ -31,25 +33,25 @@ export function extConvertToSitemap(options: Options): Duplex {
     if (metadata.blog) {
       return `<url>
         <loc>${siteMetadata.url}/blog/${metadata.dir}/${metadata.filename}.html</loc>
-        <changefreq>weekly</changefreq>
-        <priority>0.3</priority>
-        <news:news>
-          <news:publication>
-              <news:name>${siteMetadata.name}</news:name>
-              <news:language>fr</news:language>
-          </news:publication>
-          <news:genres>Blog</news:genres>
-          <news:publication_date>${metadata.revdate}</news:publication_date>
-          <news:title>${metadata.doctitle}</news:title>
-          <news:keywords>${metadata.keywords}</news:keywords>
-          <news:stock_tickers>${metadata.category}</news:stock_tickers>
-        </news:news>
+        <lastmod>${moment(siteMetadata.revdate).format()}</lastmod>
+        <priority>0.51</priority>      
     </url>`;
+      // <news:news>
+      //   <news:publication>
+      //       <news:name>${siteMetadata.name}</news:name>
+      //       <news:language>fr</news:language>
+      //   </news:publication>
+      //   <news:genres>Blog</news:genres>
+      //   <news:publication_date>${metadata.revdate}</news:publication_date>
+      //   <news:title>${metadata.doctitle}</news:title>
+      //   <news:keywords>${metadata.keywords}</news:keywords>
+      //   <news:stock_tickers>${metadata.category}</news:stock_tickers>
+      // </news:news>
     }
     return `<url>
         <loc>${siteMetadata.url}/${metadata.filename}.html</loc>
-        <changefreq>weekly</changefreq>
-        <priority>${metadata.priority ? metadata.priority : 0.3}</priority>
+        <lastmod>${moment().format()}</lastmod>
+        <priority>${metadata.priority ? metadata.priority : 0.51}</priority>
     </url>`;
   }
 
@@ -61,21 +63,25 @@ export function extConvertToSitemap(options: Options): Duplex {
 
   function endStream(stream: Duplex) {
     const fileContent = `<?xml version="1.0" encoding="UTF-8"?>
-      <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+    <urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
         <url>
           <loc>${siteMetadata.url}/</loc>
-          <changefreq>weekly</changefreq>
-          <priority>1</priority>
+          <lastmod>${moment().format()}</lastmod>
+          <priority>1.00</priority>
         </url>
         <url>
           <loc>${siteMetadata.url}/blog.html</loc>
-          <changefreq>weekly</changefreq>
-          <priority>0.9</priority>
+          <lastmod>${moment().format()}</lastmod>
+          <priority>0.90</priority>
         </url>
         <url>
           <loc>${siteMetadata.url}/blog_archive.html</loc>
-          <changefreq>weekly</changefreq>
-          <priority>0.9</priority>
+          <lastmod>${moment().format()}</lastmod>
+          <priority>0.90</priority>
         </url>
         ${xml}
       </urlset>`;

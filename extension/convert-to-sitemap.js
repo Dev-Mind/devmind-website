@@ -7,6 +7,7 @@ var fs = require("fs");
 var path = require("path");
 var file_exist_1 = require("./file-exist");
 var through_1 = require("./utils/through");
+var moment = require("moment");
 /**
  * This plugin parse indexes (blog + page) and create a sitemap for bot indexer
  */
@@ -22,9 +23,20 @@ function extConvertToSitemap(options) {
             return '';
         }
         if (metadata.blog) {
-            return "<url>\n        <loc>" + siteMetadata.url + "/blog/" + metadata.dir + "/" + metadata.filename + ".html</loc>\n        <changefreq>weekly</changefreq>\n        <priority>0.3</priority>\n        <news:news>\n          <news:publication>\n              <news:name>" + siteMetadata.name + "</news:name>\n              <news:language>fr</news:language>\n          </news:publication>\n          <news:genres>Blog</news:genres>\n          <news:publication_date>" + metadata.revdate + "</news:publication_date>\n          <news:title>" + metadata.doctitle + "</news:title>\n          <news:keywords>" + metadata.keywords + "</news:keywords>\n          <news:stock_tickers>" + metadata.category + "</news:stock_tickers>\n        </news:news>\n    </url>";
+            return "<url>\n        <loc>" + siteMetadata.url + "/blog/" + metadata.dir + "/" + metadata.filename + ".html</loc>\n        <lastmod>" + moment(siteMetadata.revdate).format() + "</lastmod>\n        <priority>0.51</priority>      \n    </url>";
+            // <news:news>
+            //   <news:publication>
+            //       <news:name>${siteMetadata.name}</news:name>
+            //       <news:language>fr</news:language>
+            //   </news:publication>
+            //   <news:genres>Blog</news:genres>
+            //   <news:publication_date>${metadata.revdate}</news:publication_date>
+            //   <news:title>${metadata.doctitle}</news:title>
+            //   <news:keywords>${metadata.keywords}</news:keywords>
+            //   <news:stock_tickers>${metadata.category}</news:stock_tickers>
+            // </news:news>
         }
-        return "<url>\n        <loc>" + siteMetadata.url + "/" + metadata.filename + ".html</loc>\n        <changefreq>weekly</changefreq>\n        <priority>" + (metadata.priority ? metadata.priority : 0.3) + "</priority>\n    </url>";
+        return "<url>\n        <loc>" + siteMetadata.url + "/" + metadata.filename + ".html</loc>\n        <lastmod>" + moment().format() + "</lastmod>\n        <priority>" + (metadata.priority ? metadata.priority : 0.51) + "</priority>\n    </url>";
     }
     function iterateOnStream(stream, data) {
         xml += data.length === 0 ? '' : data
@@ -32,7 +44,7 @@ function extConvertToSitemap(options) {
             .reduce(function (a, b) { return a + b; });
     }
     function endStream(stream) {
-        var fileContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n      <urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:news=\"http://www.google.com/schemas/sitemap-news/0.9\">\n        <url>\n          <loc>" + siteMetadata.url + "/</loc>\n          <changefreq>weekly</changefreq>\n          <priority>1</priority>\n        </url>\n        <url>\n          <loc>" + siteMetadata.url + "/blog.html</loc>\n          <changefreq>weekly</changefreq>\n          <priority>0.9</priority>\n        </url>\n        <url>\n          <loc>" + siteMetadata.url + "/blog_archive.html</loc>\n          <changefreq>weekly</changefreq>\n          <priority>0.9</priority>\n        </url>\n        " + xml + "\n      </urlset>";
+        var fileContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n    <urlset\n      xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"\n      xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n      xsi:schemaLocation=\"http://www.sitemaps.org/schemas/sitemap/0.9\n            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd\">\n        <url>\n          <loc>" + siteMetadata.url + "/</loc>\n          <lastmod>" + moment().format() + "</lastmod>\n          <priority>1.00</priority>\n        </url>\n        <url>\n          <loc>" + siteMetadata.url + "/blog.html</loc>\n          <lastmod>" + moment().format() + "</lastmod>\n          <priority>0.90</priority>\n        </url>\n        <url>\n          <loc>" + siteMetadata.url + "/blog_archive.html</loc>\n          <lastmod>" + moment().format() + "</lastmod>\n          <priority>0.90</priority>\n        </url>\n        " + xml + "\n      </urlset>";
         var target = new Vinyl({ path: 'sitemap.xml', contents: Buffer.from(fileContent) });
         stream.emit('data', target);
         stream.emit('end');

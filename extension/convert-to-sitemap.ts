@@ -10,7 +10,6 @@ import {extFileExist} from "./file-exist";
 import {through} from './utils/through';
 import {Duplex} from "stream";
 import * as moment from "moment";
-import {DATE_EN_FORMAT} from "./utils/time";
 
 /**
  * This plugin parse indexes (blog + page) and create a sitemap for bot indexer

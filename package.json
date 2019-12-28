@@ -34,7 +34,7 @@
     "cheerio": "^0.22.0",
     "fs": "^0.0.1-security",
     "graceful-fs": "^4.1.11",
-    "handlebars": "^4.0.12",
+    "handlebars": "^4.3.0",
     "highlight.js": "^9.15.8",
     "moment": "^2.18.1",
     "node-prismjs": "^0.1.2",

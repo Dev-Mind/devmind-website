@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.extConvertToBlogList = void 0;
 var Vinyl = require("vinyl");
 var PluginError = require("plugin-error");
 var handlebars = require("handlebars");

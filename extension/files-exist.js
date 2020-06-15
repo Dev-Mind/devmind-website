@@ -1,5 +1,6 @@
 'use strict';
 exports.__esModule = true;
+exports.extFilesExist = void 0;
 var file_exist_1 = require("./file-exist");
 var PluginError = require("plugin-error");
 var path = require("path");

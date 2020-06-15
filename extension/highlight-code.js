@@ -1,5 +1,6 @@
 'use strict';
 exports.__esModule = true;
+exports.extHighlightCode = void 0;
 var map_stream_1 = require("./utils/map-stream");
 var Prism = require('node-prismjs');
 var cheerio = require('cheerio');

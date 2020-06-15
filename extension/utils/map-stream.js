@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.mapStream = void 0;
 var stream_1 = require("stream");
 /**
  * Filter will reemit the data if cb(err,pass) pass is truthy

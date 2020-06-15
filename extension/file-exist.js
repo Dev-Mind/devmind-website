@@ -1,5 +1,6 @@
 'use strict';
 exports.__esModule = true;
+exports.extFileExist = void 0;
 var fs = require("fs");
 /**
  * This extension return true if the file exists

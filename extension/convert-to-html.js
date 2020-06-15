@@ -1,5 +1,6 @@
 'use strict';
 exports.__esModule = true;
+exports.extConvertToHtml = void 0;
 var map_stream_1 = require("./utils/map-stream");
 /**
  * Used to change Asciidoc file extension to html

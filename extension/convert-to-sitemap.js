@@ -1,5 +1,6 @@
 'use strict';
 exports.__esModule = true;
+exports.extConvertToSitemap = void 0;
 var model_1 = require("./model");
 var PluginError = require("plugin-error");
 var Vinyl = require("vinyl");

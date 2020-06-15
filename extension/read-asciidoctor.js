@@ -1,5 +1,6 @@
 'use strict';
 exports.__esModule = true;
+exports.extReadAsciidoc = void 0;
 var time_1 = require("./utils/time");
 var map_stream_1 = require("./utils/map-stream");
 var asciidoctorOptions = {
@@ -48,7 +49,7 @@ function extReadAsciidoc(options) {
             revdate: time_1.convertDateEn(file.attributes.revdate),
             description: file.attributes.description,
             doctitle: file.attributes.doctitle,
-            keywords: file.attributes.keywords.split(","),
+            keywords: file.attributes.keywords ? file.attributes.keywords.split(",") : undefined,
             filename: filename,
             category: file.attributes.category,
             teaser: file.attributes.teaser,

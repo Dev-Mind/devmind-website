@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.DevMindGulpBuilder = void 0;
 var apply_template_1 = require("./extension/apply-template");
 var read_index_1 = require("./extension/read-index");
 var read_asciidoctor_1 = require("./extension/read-asciidoctor");

@@ -1,5 +1,6 @@
 'use strict';
 exports.__esModule = true;
+exports.extConvertToRss = void 0;
 var model_1 = require("./model");
 var time_1 = require("./utils/time");
 var Vinyl = require("vinyl");

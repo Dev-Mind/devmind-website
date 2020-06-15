@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.through = void 0;
 var stream_1 = require("stream");
 /**
  * a stream that does nothing but re-emit the input.

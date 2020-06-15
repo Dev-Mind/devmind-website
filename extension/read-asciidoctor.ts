@@ -60,7 +60,7 @@ export function extReadAsciidoc(options: Options): Duplex {
       revdate: convertDateEn(file.attributes.revdate),
       description: file.attributes.description,
       doctitle: file.attributes.doctitle,
-      keywords: file.attributes.keywords.split(","),
+      keywords: file.attributes.keywords ? file.attributes.keywords.split(",") : undefined,
       filename: filename,
       category: file.attributes.category,
       teaser: file.attributes.teaser,

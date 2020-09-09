@@ -1,12 +1,13 @@
 'use strict';
 
-import {mapStream} from "./utils/map-stream";
-import {Duplex} from "stream";
+import {Transform} from 'stream';
+import * as through2 from 'through2';
+import {TransformCallback} from 'through2';
 
 const Prism = require('node-prismjs');
 const cheerio = require('cheerio');
 
-export function extHighlightCode({selector}): Duplex {
+export function extHighlightCode({selector}): Transform {
 
   const updateComment = (html, language) => {
     let startSeparator = '//';
@@ -36,7 +37,7 @@ export function extHighlightCode({selector}): Duplex {
     return html;
   };
 
-  return mapStream((file, next) => {
+  return through2.obj((file, _, next: TransformCallback) => {
     const $ = cheerio.load(file.contents.toString(), {decodeEntities: false});
 
     $(selector).each((index, code) => {
@@ -53,4 +54,4 @@ export function extHighlightCode({selector}): Duplex {
     file.contents = Buffer.from($.html());
     next(null, file)
   });
-};
+}

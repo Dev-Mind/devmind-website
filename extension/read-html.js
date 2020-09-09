@@ -7,7 +7,7 @@ var fs = require("fs");
 var path = require("path");
 var time_1 = require("./utils/time");
 var file_exist_1 = require("./file-exist");
-var map_stream_1 = require("./utils/map-stream");
+var through2 = require("through2");
 /**
  * Read a stream of HTML files and build for each HTML file
  *  - a templateModel, a structure JSON used after with handlebar and
@@ -28,7 +28,7 @@ function extReadHtml(options) {
         throw new PluginError('read-html', "Missing metadata page with all html descriptions. Define this file. The default path is " + options.metadata.html);
     }
     var pageMetadata = JSON.parse(fs.readFileSync(pageMetadataPath, model_1.FILE_ENCODING));
-    return map_stream_1.mapStream(function (file, next) {
+    return through2.obj(function (file, _, next) {
         var html = fs.readFileSync(file.path, model_1.FILE_ENCODING);
         file.fileName = file.path.substring(file.path.lastIndexOf(path.sep) + 1, file.path.length);
         if (!pageMetadata[file.fileName])

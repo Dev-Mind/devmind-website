@@ -6,9 +6,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {currentDate, currentDateEn, currentDateIso} from "./utils/time";
 import {extFileExist} from "./file-exist";
-import {mapStream} from "./utils/map-stream";
-import {Duplex} from "stream";
-
+import {Transform} from "stream";
+import * as through2 from 'through2';
+import {TransformCallback} from "through2";
 
 /**
  * Read a stream of HTML files and build for each HTML file
@@ -24,7 +24,7 @@ import {Duplex} from "stream";
  * ----
  * @returns {stream}
  */
-export function extReadHtml(options: Options): Duplex {
+export function extReadHtml(options: Options): Transform {
 
   const pageMetadataPath = path.resolve(__dirname, options.path, options.metadata.html);
   if (!extFileExist(pageMetadataPath)) {
@@ -32,8 +32,7 @@ export function extReadHtml(options: Options): Duplex {
   }
   const pageMetadata = JSON.parse(fs.readFileSync(pageMetadataPath, FILE_ENCODING));
 
-  return mapStream((file, next) => {
-
+  return through2.obj((file, _, next: TransformCallback) => {
     const html = fs.readFileSync(file.path, FILE_ENCODING);
     file.fileName = file.path.substring(file.path.lastIndexOf(path.sep) + 1, file.path.length);
 

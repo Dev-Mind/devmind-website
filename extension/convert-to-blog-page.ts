@@ -5,9 +5,8 @@ import * as PluginError from 'plugin-error';
 import * as handlebars from 'handlebars';
 import * as fs from 'fs';
 import * as path from 'path';
-import {mapStream} from "./utils/map-stream";
-import {Duplex} from "stream";
-
+import {Transform} from "stream";
+import * as through2 from 'through2';
 
 /**
  * This plugin is used to read the firebase index. The final aim is to generate static page for blog post
@@ -16,7 +15,7 @@ import {Duplex} from "stream";
 export function extConvertToBlogPage(options: Options,
                                      handlebarsTemplateFile: string,
                                      partials: Array<HandlebarsTemplate>,
-                                     blogIndexFile: string): Duplex {
+                                     blogIndexFile: string): Transform {
 
   if (!handlebarsTemplateFile) throw new PluginError('convert-to-blog-page', 'Missing source handlebarsTemplateFile for convert-to-blog-page');
   if (!blogIndexFile) throw new PluginError('convert-to-blog-page', 'Missing source blogIndexFile for convert-to-blog-page');
@@ -28,7 +27,7 @@ export function extConvertToBlogPage(options: Options,
   const blogIndexPath = path.resolve(__dirname, options.path, blogIndexFile);
   const blogIndex = JSON.parse(fs.readFileSync(blogIndexPath, FILE_ENCODING));
 
-  return mapStream((file, next) => {
+  return through2.obj((file, _, next) => {
     // We need to find the previous blog post, the current and the next
     let previousPost;
     let nextPost;
@@ -69,7 +68,7 @@ export function extConvertToBlogPage(options: Options,
     next(null, file);
   });
 }
-;
+
 
 
 

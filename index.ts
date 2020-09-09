@@ -5,14 +5,14 @@ import {extReadAsciidoc} from "./extension/read-asciidoctor";
 import {extConvertToHtml} from "./extension/convert-to-html";
 import {extConvertToJson} from "./extension/convert-to-json";
 import {extConvertToRss} from "./extension/convert-to-rss";
-import {extConvertToSitemap} from "./extension/convert-to-sitemap";
 import {extConvertToBlogList} from "./extension/convert-to-blog-list";
 import {extConvertToBlogPage} from "./extension/convert-to-blog-page";
 import {extFileExist} from "./extension/file-exist";
 import {extFilesExist} from "./extension/files-exist";
 import {extHighlightCode} from "./extension/highlight-code";
 import {extReadHtml} from "./extension/read-html";
-import {Duplex} from "stream";
+import {Transform} from "stream";
+import {extConvertToSitemap} from "./extension/convert-to-sitemap";
 
 
 const defaultOptions: Options = {
@@ -42,39 +42,39 @@ export class DevMindGulpBuilder {
     }
   }
 
-  private options: Options;
+  private readonly options: Options;
 
   applyTemplate(handlebarsTemplateFile: string, partials: Array<HandlebarsTemplate>) {
     return extApplyTemplate(this.options, handlebarsTemplateFile, partials);
   }
 
 
-  convertToHtml(): Duplex {
+  convertToHtml(): Transform {
     return extConvertToHtml();
   }
 
-  convertToJson(fileName: string): Duplex {
-    return extConvertToJson(fileName);
+  convertToJson(filename: string): Transform {
+    return extConvertToJson(filename);
   }
 
-  convertToRss(filename: string): Duplex {
+  convertToRss(filename: string): Transform {
     return extConvertToRss(this.options, filename);
   }
 
-  convertToSitemap(): Duplex {
+  convertToSitemap(): Transform {
     return extConvertToSitemap(this.options);
   }
 
   convertToBlogList(handlebarsTemplateFile: string,
                     partials: Array<HandlebarsTemplate>,
                     filename: string,
-                    nbArticleMax: number): Duplex {
+                    nbArticleMax: number): Transform {
     return extConvertToBlogList(this.options, handlebarsTemplateFile, partials, filename, nbArticleMax);
   }
 
   convertToBlogPage(handlebarsTemplateFile: string,
                     partials: Array<HandlebarsTemplate>,
-                    blogIndexFile: string): Duplex {
+                    blogIndexFile: string): Transform {
     return extConvertToBlogPage(this.options, handlebarsTemplateFile, partials, blogIndexFile);
   }
 
@@ -83,23 +83,23 @@ export class DevMindGulpBuilder {
   }
 
 
-  filesExist(): Duplex {
+  filesExist(): Transform {
     return extFilesExist(this.options);
   }
 
-  highlightCode(selector): Duplex {
+  highlightCode(selector): Transform {
     return extHighlightCode(selector);
   }
 
-  readAsciidoc(): Duplex {
+  readAsciidoc(): Transform {
     return extReadAsciidoc(this.options);
   }
 
-  readHtml(): Duplex {
+  readHtml(): Transform {
     return extReadHtml(this.options);
   }
 
-  readIndex(): Duplex {
+  readIndex(): Transform {
     return extReadIndex();
   }
 }

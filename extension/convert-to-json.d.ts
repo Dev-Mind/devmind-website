@@ -1,6 +1,6 @@
 /// <reference types="node" />
-import { Duplex } from "stream";
+import { Transform } from "stream";
 /**
- * This plugin writes the blog metadata in a local index
+ * This plugin returns blog metadata in a JSON array
  */
-export declare function extConvertToJson(filename: string): Duplex;
+export declare function extConvertToJson(filename: string): Transform;

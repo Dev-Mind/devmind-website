@@ -7,13 +7,13 @@ var read_asciidoctor_1 = require("./extension/read-asciidoctor");
 var convert_to_html_1 = require("./extension/convert-to-html");
 var convert_to_json_1 = require("./extension/convert-to-json");
 var convert_to_rss_1 = require("./extension/convert-to-rss");
-var convert_to_sitemap_1 = require("./extension/convert-to-sitemap");
 var convert_to_blog_list_1 = require("./extension/convert-to-blog-list");
 var convert_to_blog_page_1 = require("./extension/convert-to-blog-page");
 var file_exist_1 = require("./extension/file-exist");
 var files_exist_1 = require("./extension/files-exist");
 var highlight_code_1 = require("./extension/highlight-code");
 var read_html_1 = require("./extension/read-html");
+var convert_to_sitemap_1 = require("./extension/convert-to-sitemap");
 var defaultOptions = {
     path: '../../../',
     modeDev: true,
@@ -44,8 +44,8 @@ var DevMindGulpBuilder = /** @class */ (function () {
     DevMindGulpBuilder.prototype.convertToHtml = function () {
         return convert_to_html_1.extConvertToHtml();
     };
-    DevMindGulpBuilder.prototype.convertToJson = function (fileName) {
-        return convert_to_json_1.extConvertToJson(fileName);
+    DevMindGulpBuilder.prototype.convertToJson = function (filename) {
+        return convert_to_json_1.extConvertToJson(filename);
     };
     DevMindGulpBuilder.prototype.convertToRss = function (filename) {
         return convert_to_rss_1.extConvertToRss(this.options, filename);

@@ -30,21 +30,23 @@
   },
   "dependencies": {
     "@types/gulp": "^4.0.6",
+    "@types/through2": "^2.0.36",
     "asciidoctor.js": "^1.5.9",
     "cheerio": "^0.22.0",
     "fs": "^0.0.1-security",
     "graceful-fs": "^4.2.4",
     "handlebars": "^4.7.6",
     "highlight.js": "^10.1.2",
+    "kind-of": "^6.0.3",
+    "lodash.merge": "^4.6.2",
+    "mixin-deep": "^2.0.1",
     "moment": "^2.27.0",
     "node-prismjs": "^0.1.2",
-    "prismjs": "^1.21.0",
     "plugin-error": "^1.0.1",
-    "ts-node": "^9.0.0",
-    "typescript": "^4.0.2",
+    "prismjs": "^1.21.0",
     "set-value": "^3.0.2",
-    "kind-of": "^6.0.3",
-    "mixin-deep": "^2.0.1",
-    "lodash.merge": "^4.6.2"
+    "through2": "^4.0.2",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.2"
   }
 }

@@ -2,7 +2,7 @@
 exports.__esModule = true;
 exports.extReadAsciidoc = void 0;
 var time_1 = require("./utils/time");
-var map_stream_1 = require("./utils/map-stream");
+var through2 = require("through2");
 var asciidoctorOptions = {
     safe: 'safe',
     doctype: 'article',
@@ -30,7 +30,7 @@ var asciidoctorOptions = {
  */
 function extReadAsciidoc(options) {
     var asciidoctor = require(options.path + "node_modules/asciidoctor.js/dist/node/asciidoctor")();
-    return map_stream_1.mapStream(function (file, next) {
+    return through2.obj(function (file, _, next) {
         var opts = Object.assign({}, asciidoctorOptions, {});
         opts.attributes = Object.assign({}, opts.attributes);
         var asciidoc = file.contents.toString();

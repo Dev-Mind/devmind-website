@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { Duplex } from "stream";
+import { Transform } from "stream";
 /**
  * Used to change Asciidoc file extension to html
  *
@@ -12,4 +12,4 @@ import { Duplex } from "stream";
  * ----
  * @returns {stream}
  */
-export declare function extConvertToHtml(): Duplex;
+export declare function extConvertToHtml(): Transform;

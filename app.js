@@ -1,8 +1,7 @@
 const express = require('express');
 const http = require('http');
 
-const app = express()
-  .use(express.static('build/dist'));
+const app = express().use(express.static('build/dist'));
 
 app.set('port', 8080);
 

@@ -1,11 +1,11 @@
-import {FILE_ENCODING, HandlebarsTemplate, Options} from "./model";
-import {extFileExist} from "./file-exist";
+import {FILE_ENCODING, HandlebarsTemplate, Options} from './model';
+import {extFileExist} from './file-exist';
 import * as handlebars from 'handlebars';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as PluginError from 'plugin-error';
-import {mapStream} from './utils/map-stream';
-import {Duplex} from "stream";
+import {Transform}  from 'stream';
+import * as through2 from 'through2';
 
 /**
  * Used to apply a handlebar template on a file stream. This extension has to be applied after `read-html` or
@@ -29,12 +29,11 @@ import {Duplex} from "stream";
  */
 export function extApplyTemplate(options: Options,
                                  handlebarsTemplateFile: string,
-                                 partials: Array<HandlebarsTemplate>): Duplex {
+                                 partials: Array<HandlebarsTemplate>) : Transform {
 
   const handlebarsTemplatePath = path.resolve(__dirname, options.path, handlebarsTemplateFile);
   if (!extFileExist(handlebarsTemplatePath)) {
-    throw new PluginError('apply-template',
-      `handlebars template ${handlebarsTemplatePath} is required`);
+    throw new PluginError('apply-template', `handlebars template ${handlebarsTemplatePath} is required`);
   }
 
   if (partials) {
@@ -46,7 +45,7 @@ export function extApplyTemplate(options: Options,
 
   const handlebarsTemplate = handlebars.compile(fs.readFileSync(handlebarsTemplatePath, FILE_ENCODING));
 
-  return mapStream(async (file, next) => {
+  return through2.obj((file, _, next) => {
     file.contents = Buffer.from(handlebarsTemplate(file.templateModel));
     next(null, file);
   });

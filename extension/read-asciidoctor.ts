@@ -2,9 +2,9 @@
 
 import {convertDateEn, currentDateIso} from "./utils/time";
 import {IndexBlogData, Options} from "./model";
-import {mapStream} from "./utils/map-stream";
-import {Duplex} from "stream";
-
+import {Transform} from "stream";
+import * as through2 from 'through2';
+import {TransformCallback} from "through2";
 
 const asciidoctorOptions = {
   safe: 'safe',
@@ -32,11 +32,11 @@ const asciidoctorOptions = {
  * @param options
  * @return stream
  */
-export function extReadAsciidoc(options: Options): Duplex {
+export function extReadAsciidoc(options: Options): Transform {
 
   const asciidoctor = require(`${options.path}node_modules/asciidoctor.js/dist/node/asciidoctor`)();
 
-  return mapStream((file, next) => {
+  return through2.obj((file, _, next: TransformCallback) => {
 
     const opts = Object.assign({}, asciidoctorOptions, {});
     opts.attributes = Object.assign({}, opts.attributes);

@@ -124,7 +124,7 @@ The result is for example
       "filename": "experience",
       "priority": 0.6,
       "dir": "/"
-    }
+    },
     ...
 ]
 ----
@@ -202,7 +202,6 @@ The file `build/.tmp/blogindex.json` is for example
       ],
       "filename": "experience",
       "priority": 0.6,
-      "
   }
 ]
 ----

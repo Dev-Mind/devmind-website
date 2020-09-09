@@ -1,6 +1,6 @@
 /// <reference types="node" />
-import { HandlebarsTemplate, Options } from "./model";
-import { Duplex } from "stream";
+import { HandlebarsTemplate, Options } from './model';
+import { Transform } from 'stream';
 /**
  * Used to apply a handlebar template on a file stream. This extension has to be applied after `read-html` or
  * `read-asciidoctor` extensions which create the `templateModel` sent to handlebars to populate the template
@@ -21,4 +21,4 @@ import { Duplex } from "stream";
  * @param partials
  * @returns {stream}
  */
-export declare function extApplyTemplate(options: Options, handlebarsTemplateFile: string, partials: Array<HandlebarsTemplate>): Duplex;
+export declare function extApplyTemplate(options: Options, handlebarsTemplateFile: string, partials: Array<HandlebarsTemplate>): Transform;

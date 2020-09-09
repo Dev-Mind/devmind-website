@@ -1,7 +1,7 @@
 'use strict';
 exports.__esModule = true;
 exports.extHighlightCode = void 0;
-var map_stream_1 = require("./utils/map-stream");
+var through2 = require("through2");
 var Prism = require('node-prismjs');
 var cheerio = require('cheerio');
 function extHighlightCode(_a) {
@@ -29,7 +29,7 @@ function extHighlightCode(_a) {
         }
         return html;
     };
-    return map_stream_1.mapStream(function (file, next) {
+    return through2.obj(function (file, _, next) {
         var $ = cheerio.load(file.contents.toString(), { decodeEntities: false });
         $(selector).each(function (index, code) {
             var elem = $(code);
@@ -46,4 +46,3 @@ function extHighlightCode(_a) {
     });
 }
 exports.extHighlightCode = extHighlightCode;
-;

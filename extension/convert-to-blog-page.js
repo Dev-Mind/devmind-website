@@ -6,7 +6,7 @@ var PluginError = require("plugin-error");
 var handlebars = require("handlebars");
 var fs = require("fs");
 var path = require("path");
-var map_stream_1 = require("./utils/map-stream");
+var through2 = require("through2");
 /**
  * This plugin is used to read the firebase index. The final aim is to generate static page for blog post
  * (everything has to be static for indexing bots)
@@ -22,7 +22,7 @@ function extConvertToBlogPage(options, handlebarsTemplateFile, partials, blogInd
     var handlebarsTemplate = handlebars.compile(fs.readFileSync(path.resolve(__dirname, options.path, handlebarsTemplateFile), model_1.FILE_ENCODING));
     var blogIndexPath = path.resolve(__dirname, options.path, blogIndexFile);
     var blogIndex = JSON.parse(fs.readFileSync(blogIndexPath, model_1.FILE_ENCODING));
-    return map_stream_1.mapStream(function (file, next) {
+    return through2.obj(function (file, _, next) {
         // We need to find the previous blog post, the current and the next
         var previousPost;
         var nextPost;
@@ -58,4 +58,3 @@ function extConvertToBlogPage(options, handlebarsTemplateFile, partials, blogInd
     });
 }
 exports.extConvertToBlogPage = extConvertToBlogPage;
-;

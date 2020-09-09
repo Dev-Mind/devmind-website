@@ -3,22 +3,23 @@ exports.__esModule = true;
 exports.extConvertToJson = void 0;
 var Vinyl = require("vinyl");
 var PluginError = require("plugin-error");
-var through_1 = require("./utils/through");
+var through2 = require("through2");
 /**
- * This plugin writes the blog metadata in a local index
+ * This plugin returns blog metadata in a JSON array
  */
 function extConvertToJson(filename) {
     if (!filename)
         throw new PluginError('convertToJson', 'Missing target filename for convert-to-json');
     var json = [];
-    var iterateOnStream = function (stream, data) {
-        json.push(JSON.stringify(data.indexData));
+    var iterateOnStream = function (file, _, next) {
+        json.push(JSON.stringify(file.indexData));
+        next(null, file);
     };
-    var endStream = function (stream) {
+    var flushStream = function (cb) {
         var target = new Vinyl({ path: filename, contents: Buffer.from("[" + json + "]") });
-        stream.emit('data', target);
-        stream.emit('end');
+        this.push(target);
+        cb();
     };
-    return through_1.through(iterateOnStream, endStream);
+    return through2.obj(iterateOnStream, flushStream);
 }
 exports.extConvertToJson = extConvertToJson;

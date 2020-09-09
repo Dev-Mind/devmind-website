@@ -1,20 +1,20 @@
 /// <reference types="node" />
 import { HandlebarsTemplate, Options } from "./extension/model";
-import { Duplex } from "stream";
+import { Transform } from "stream";
 export declare class DevMindGulpBuilder {
     constructor(givenOptions?: Options);
-    private options;
-    applyTemplate(handlebarsTemplateFile: string, partials: Array<HandlebarsTemplate>): Duplex;
-    convertToHtml(): Duplex;
-    convertToJson(fileName: string): Duplex;
-    convertToRss(filename: string): Duplex;
-    convertToSitemap(): Duplex;
-    convertToBlogList(handlebarsTemplateFile: string, partials: Array<HandlebarsTemplate>, filename: string, nbArticleMax: number): Duplex;
-    convertToBlogPage(handlebarsTemplateFile: string, partials: Array<HandlebarsTemplate>, blogIndexFile: string): Duplex;
+    private readonly options;
+    applyTemplate(handlebarsTemplateFile: string, partials: Array<HandlebarsTemplate>): Transform;
+    convertToHtml(): Transform;
+    convertToJson(filename: string): Transform;
+    convertToRss(filename: string): Transform;
+    convertToSitemap(): Transform;
+    convertToBlogList(handlebarsTemplateFile: string, partials: Array<HandlebarsTemplate>, filename: string, nbArticleMax: number): Transform;
+    convertToBlogPage(handlebarsTemplateFile: string, partials: Array<HandlebarsTemplate>, blogIndexFile: string): Transform;
     fileExist(filePath: string): boolean;
-    filesExist(): Duplex;
-    highlightCode(selector: any): Duplex;
-    readAsciidoc(): Duplex;
-    readHtml(): Duplex;
-    readIndex(): Duplex;
+    filesExist(): Transform;
+    highlightCode(selector: any): Transform;
+    readAsciidoc(): Transform;
+    readHtml(): Transform;
+    readIndex(): Transform;
 }

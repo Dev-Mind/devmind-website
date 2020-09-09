@@ -7,15 +7,14 @@ import * as moment from 'moment';
 import {FILE_ENCODING, HandlebarsTemplate, Options} from "./model";
 import {currentDate, currentDateIso} from "./utils/time";
 import {extFileExist} from "./file-exist";
-import {through} from './utils/through';
-import {Duplex} from "stream";
-
+import {Transform} from "stream";
+import * as through2 from 'through2';
 
 export function extConvertToBlogList(options: Options,
                                      handlebarsTemplateFile: string,
                                      partials: Array<HandlebarsTemplate>,
                                      filename: string,
-                                     nbArticleMax: number): Duplex {
+                                     nbArticleMax: number): Transform {
 
   if (!handlebarsTemplateFile) throw new PluginError('convert-to-blog-list', 'Missing source handlebarsTemplateFile for convert-to-blog-list');
   if (!filename) throw new PluginError('convert-to-blog-list', 'Missing target filename for convert-to-blog-list');
@@ -49,8 +48,8 @@ export function extConvertToBlogList(options: Options,
     articleByYears: []
   };
 
-  function iterateOnStream(stream, data) {
-    const blogIndex = data
+  const iterateOnStream = function (file, _, next) {
+    const blogIndex = file
       .map(a => {
         a.date = a.revdate.substring(8, 10) + '/' + a.revdate.substring(5, 7) + '/' + a.revdate.substring(0, 4);
         return a;
@@ -79,14 +78,15 @@ export function extConvertToBlogList(options: Options,
         .push(article)
       );
     }
+    next();
   }
 
-  function endStream(stream: Duplex) {
-    let target = new Vinyl({path: filename, contents: Buffer.from(handlebarsTemplate(metadata))});
-    stream.emit('data', target);
-    stream.emit('end');
-  }
+  const flushStream = function (cb) {
+    const target = new Vinyl({path: filename, contents: Buffer.from(handlebarsTemplate(metadata))});
+    this.push(target);
+    cb();
+  };
 
-  return through(iterateOnStream, endStream);
+  return through2.obj(iterateOnStream, flushStream);
 
 }

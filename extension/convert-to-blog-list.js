@@ -10,7 +10,7 @@ var moment = require("moment");
 var model_1 = require("./model");
 var time_1 = require("./utils/time");
 var file_exist_1 = require("./file-exist");
-var through_1 = require("./utils/through");
+var through2 = require("through2");
 function extConvertToBlogList(options, handlebarsTemplateFile, partials, filename, nbArticleMax) {
     if (!handlebarsTemplateFile)
         throw new PluginError('convert-to-blog-list', 'Missing source handlebarsTemplateFile for convert-to-blog-list');
@@ -38,8 +38,8 @@ function extConvertToBlogList(options, handlebarsTemplateFile, partials, filenam
         last15Articles: undefined,
         articleByYears: []
     };
-    function iterateOnStream(stream, data) {
-        var blogIndex = data
+    var iterateOnStream = function (file, _, next) {
+        var blogIndex = file
             .map(function (a) {
             a.date = a.revdate.substring(8, 10) + '/' + a.revdate.substring(5, 7) + '/' + a.revdate.substring(0, 4);
             return a;
@@ -66,12 +66,13 @@ function extConvertToBlogList(options, handlebarsTemplateFile, partials, filenam
                 .value
                 .push(article); });
         }
-    }
-    function endStream(stream) {
+        next();
+    };
+    var flushStream = function (cb) {
         var target = new Vinyl({ path: filename, contents: Buffer.from(handlebarsTemplate(metadata)) });
-        stream.emit('data', target);
-        stream.emit('end');
-    }
-    return through_1.through(iterateOnStream, endStream);
+        this.push(target);
+        cb();
+    };
+    return through2.obj(iterateOnStream, flushStream);
 }
 exports.extConvertToBlogList = extConvertToBlogList;

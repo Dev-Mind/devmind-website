@@ -2,28 +2,30 @@
 
 import * as Vinyl from 'vinyl';
 import * as PluginError from 'plugin-error';
-import {through} from './utils/through';
-import {Duplex} from "stream";
+import {Transform} from "stream";
+import * as through2 from 'through2';
 
 /**
- * This plugin writes the blog metadata in a local index
+ * This plugin returns blog metadata in a JSON array
  */
-export function extConvertToJson(filename: string): Duplex {
+export function extConvertToJson(filename: string): Transform {
   if (!filename) throw new PluginError('convertToJson', 'Missing target filename for convert-to-json');
 
   let json = [];
 
-  const iterateOnStream = (stream: Duplex, data) => {
-    json.push(JSON.stringify(data.indexData));
+  const iterateOnStream = function (file, _, next) {
+    json.push(JSON.stringify(file.indexData));
+    next(null, file);
   };
 
-  const endStream = (stream: Duplex) => {
+  const flushStream = function (cb) {
     const target = new Vinyl({path: filename, contents: Buffer.from(`[${json}]`)});
-    stream.emit('data', target);
-    stream.emit('end');
+    this.push(target);
+    cb();
   };
 
-  return through(iterateOnStream, endStream);
+  return through2.obj(iterateOnStream, flushStream);
+
 }
 
 

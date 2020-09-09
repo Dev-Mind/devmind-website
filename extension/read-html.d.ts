@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import { Options } from "./model";
-import { Duplex } from "stream";
+import { Transform } from "stream";
 /**
  * Read a stream of HTML files and build for each HTML file
  *  - a templateModel, a structure JSON used after with handlebar and
@@ -15,4 +15,4 @@ import { Duplex } from "stream";
  * ----
  * @returns {stream}
  */
-export declare function extReadHtml(options: Options): Duplex;
+export declare function extReadHtml(options: Options): Transform;

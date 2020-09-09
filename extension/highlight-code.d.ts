@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { Duplex } from "stream";
+import { Transform } from 'stream';
 export declare function extHighlightCode({ selector }: {
     selector: any;
-}): Duplex;
+}): Transform;

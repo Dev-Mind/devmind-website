@@ -8,3 +8,42 @@
 :imgteaser: ../../img/blog/2015/formes_leadership_00.jpg
 
 Test
+
+[source, java, subs="none"]
+----
+class CallForPaperServiceTests {
+    /**
+     * Java comment
+     */
+    @Test
+    public void submitShouldFailWhenRequiredDataAreAbsent(){  }
+
+    @Test
+    public void submitShouldFailWhenConfirmationMailIsNtSend(){  }
+
+    @Test
+    public void submitShouldSendEmail(){  }
+
+    @Test
+    public void acceptShouldSendEmailToSessionSpeakers(){  }
+
+    @Test
+    public void acceptShouldFailWhenSpeakerEmailCantBeSend(){
+        () => {
+        };
+    }
+
+    // ... on peut imaginer des dizaines de tests supplémentaires avec des noms beaucoup plus long
+}
+----
+
+[source, javascript, subs="none"]
+----
+it('submit should fail when required data are absent', () => { });
+----
+
+[source, shell, subs="none"]
+----
+# a comment
+./gradlew bootRun
+----

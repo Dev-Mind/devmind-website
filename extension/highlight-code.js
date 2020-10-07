@@ -11,7 +11,7 @@ function extHighlightCode(_a) {
         var $ = cheerio.load(file.contents.toString(), { decodeEntities: false });
         $(selector).each(function (index, code) {
             var elem = $(code);
-            var language = elem.prop('data-lang');
+            var language = elem.prop('data-lang') || 'javascript';
             var fileContents = elem.html();
             loadLanguages(language);
             var highlightedContents = Prism.highlight(fileContents, Prism.languages[language], language);

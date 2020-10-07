@@ -15,7 +15,7 @@ export function extHighlightCode({selector}): Transform {
 
     $(selector).each((index, code) => {
       const elem = $(code);
-      const language = elem.prop('data-lang');
+      const language = elem.prop('data-lang') || 'javascript';
       const fileContents = elem.html();
       loadLanguages(language)
       const highlightedContents = Prism.highlight(fileContents, Prism.languages[language], language);

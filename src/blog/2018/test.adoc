@@ -8,3 +8,21 @@
 :imgteaser: ../../img/blog/2015/formes_leadership_00.jpg
 
 Test
+
+[source, html]
+----
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ title }}</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <h1>{{ title }}</h1>
+    <hr>
+    {{{body}}}
+  </div>
+</body>
+</html>
+----

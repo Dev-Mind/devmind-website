@@ -57,9 +57,12 @@ export function extConvertToBlogPage(options: Options,
       };
     }
 
+    var ampRegexp = new RegExp('&amp;', 'g');
     const content = handlebarsTemplate(file.templateModel)
       .replace('<html><head></head><body>', '')
       .replace('</body>', '')
+      .replace('</html>', '')
+      .replace(ampRegexp, '&')
       .replace('</html>', '');
 
     file.templateModel.contents = file.contents.toString();

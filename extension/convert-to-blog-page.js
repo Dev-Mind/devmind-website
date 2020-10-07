@@ -48,9 +48,12 @@ function extConvertToBlogPage(options, handlebarsTemplateFile, partials, blogInd
                 doctitle: nextPost.doctitle
             };
         }
+        var ampRegexp = new RegExp('&amp;', 'g');
         var content = handlebarsTemplate(file.templateModel)
             .replace('<html><head></head><body>', '')
             .replace('</body>', '')
+            .replace('</html>', '')
+            .replace(ampRegexp, '&')
             .replace('</html>', '');
         file.templateModel.contents = file.contents.toString();
         file.contents = Buffer.from(content);

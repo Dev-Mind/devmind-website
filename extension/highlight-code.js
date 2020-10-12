@@ -7,15 +7,31 @@ var cheerio = require('cheerio');
 var loadLanguages = require('prismjs/components/');
 function extHighlightCode(_a) {
     var selector = _a.selector;
+    var updateJava = function (html, language) {
+        if (language === 'java' || language === 'kotlin' || language === 'typescript') {
+            console.log(html);
+            return html.replace(/<span class=\"token operator\">&amp;<\/span>lt<span class=\"token punctuation\">;<\/span>/g, '&lt;')
+                .replace(/<span class=\"token operator\">&amp;<\/span>gt<span class=\"token punctuation\">;<\/span>/g, '&gt;');
+        }
+        return html;
+    };
     return through2.obj(function (file, _, next) {
-        var $ = cheerio.load(file.contents.toString(), { decodeEntities: false });
+        var $ = cheerio.load(file.contents.toString(), {
+            decodeEntities: true,
+            lowerCaseTags: false,
+            withEndIndices: false,
+            normalizeWhitespace: false,
+            recognizeSelfClosing: true
+        });
         $(selector).each(function (index, code) {
             var elem = $(code);
             var language = elem.prop('data-lang') || 'javascript';
             var fileContents = elem.html();
             loadLanguages(language);
+            console.log(fileContents, language);
             var highlightedContents = Prism.highlight(fileContents, Prism.languages[language], language);
-            elem.parent().replaceWith("<pre class=\"language-" + language + "\">" + highlightedContents + "</pre>");
+            var finalHtml = updateJava(highlightedContents, language);
+            elem.parent().replaceWith("<pre class=\"language-" + language + "\">" + finalHtml + "</pre>");
             elem.addClass('highlights');
         });
         file.contents = Buffer.from($.html());

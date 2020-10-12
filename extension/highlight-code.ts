@@ -10,8 +10,21 @@ const loadLanguages = require('prismjs/components/');
 
 export function extHighlightCode({selector}): Transform {
 
+  const updateJava = (html, language) => {
+    if (language === 'java' || language === 'kotlin' || language === 'typescript') {
+      return html.replace(/<span class=\"token operator\">&amp;<\/span>lt<span class=\"token punctuation\">;<\/span>/g, '&lt;')
+        .replace(/<span class=\"token operator\">&amp;<\/span>gt<span class=\"token punctuation\">;<\/span>/g, '&gt;')
+    }
+    return html;
+  };
+
   return through2.obj((file, _, next: TransformCallback) => {
-    const $ = cheerio.load(file.contents.toString(), {decodeEntities: false});
+    const $ = cheerio.load(file.contents.toString(), {
+      decodeEntities: true,
+      lowerCaseTags: false,
+      withEndIndices: false,
+      normalizeWhitespace: false,
+      recognizeSelfClosing:true});
 
     $(selector).each((index, code) => {
       const elem = $(code);
@@ -19,7 +32,8 @@ export function extHighlightCode({selector}): Transform {
       const fileContents = elem.html();
       loadLanguages(language)
       const highlightedContents = Prism.highlight(fileContents, Prism.languages[language], language);
-      elem.parent().replaceWith(`<pre class="language-${language}">${highlightedContents}</pre>`);
+      const finalHtml = updateJava(highlightedContents, language);
+      elem.parent().replaceWith(`<pre class="language-${language}">${finalHtml}</pre>`);
       elem.addClass('highlights');
     });
 

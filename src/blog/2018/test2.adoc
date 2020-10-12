@@ -9,7 +9,7 @@
 
 Test
 
-[source, java, subs="none"]
+[source, java, subs="specialchars"]
 ----
 class CallForPaperServiceTests {
     /**
@@ -31,6 +31,20 @@ class CallForPaperServiceTests {
     public void acceptShouldFailWhenSpeakerEmailCantBeSend(){
         () => {
         };
+
+        public List<LightDto> findAll() {
+            return lightDao.findAll()
+                       .stream()
+                       .map(LightDto::new)
+                       .collect(Collectors.toList());
+        }
+
+        public List<LightDto> findAll2(List<String> ids) {
+            return lightDao.findAll()
+                       .stream()
+                       .map(LightDto::new)
+                       .collect(Collectors.toList());
+        }
     }
 
     // ... on peut imaginer des dizaines de tests supplémentaires avec des noms beaucoup plus long

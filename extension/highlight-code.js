@@ -8,9 +8,10 @@ var loadLanguages = require('prismjs/components/');
 function extHighlightCode(_a) {
     var selector = _a.selector;
     var updateJava = function (html, language) {
-        if (language === 'java' || language === 'kotlin' || language === 'typescript') {
-            console.log(html);
-            return html.replace(/<span class=\"token operator\">&amp;<\/span>lt<span class=\"token punctuation\">;<\/span>/g, '&lt;')
+        if (language === 'java' || language === 'kotlin' || language === 'typescript' || language === 'javascript') {
+            return html
+                .replace(/<span class=\"token operator\">&amp;<\/span>quot<span class=\"token punctuation\">;<\/span>/g, '&quot;')
+                .replace(/<span class=\"token operator\">&amp;<\/span>lt<span class=\"token punctuation\">;<\/span>/g, '&lt;')
                 .replace(/<span class=\"token operator\">&amp;<\/span>gt<span class=\"token punctuation\">;<\/span>/g, '&gt;');
         }
         return html;
@@ -28,7 +29,6 @@ function extHighlightCode(_a) {
             var language = elem.prop('data-lang') || 'javascript';
             var fileContents = elem.html();
             loadLanguages(language);
-            console.log(fileContents, language);
             var highlightedContents = Prism.highlight(fileContents, Prism.languages[language], language);
             var finalHtml = updateJava(highlightedContents, language);
             elem.parent().replaceWith("<pre class=\"language-" + language + "\">" + finalHtml + "</pre>");

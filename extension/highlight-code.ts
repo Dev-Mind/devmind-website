@@ -11,8 +11,10 @@ const loadLanguages = require('prismjs/components/');
 export function extHighlightCode({selector}): Transform {
 
   const updateJava = (html, language) => {
-    if (language === 'java' || language === 'kotlin' || language === 'typescript') {
-      return html.replace(/<span class=\"token operator\">&amp;<\/span>lt<span class=\"token punctuation\">;<\/span>/g, '&lt;')
+    if (language === 'java' || language === 'kotlin' || language === 'typescript' || language === 'javascript') {
+      return html
+        .replace(/<span class=\"token operator\">&amp;<\/span>quot<span class=\"token punctuation\">;<\/span>/g, '&quot;')
+        .replace(/<span class=\"token operator\">&amp;<\/span>lt<span class=\"token punctuation\">;<\/span>/g, '&lt;')
         .replace(/<span class=\"token operator\">&amp;<\/span>gt<span class=\"token punctuation\">;<\/span>/g, '&gt;')
     }
     return html;

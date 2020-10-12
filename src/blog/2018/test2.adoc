@@ -11,6 +11,7 @@ Test
 
 [source, java, subs="specialchars"]
 ----
+@RequestMapping("/api/hello")
 class CallForPaperServiceTests {
     /**
      * Java comment

@@ -52,7 +52,7 @@ class CallForPaperServiceTests {
 }
 ----
 
-[source, javascript, subs="none"]
+[source, javascript, subs="specialchars"]
 ----
 it('submit should fail when required data are absent', () => { });
 ----
@@ -61,4 +61,27 @@ it('submit should fail when required data are absent', () => { });
 ----
 # a comment
 ./gradlew bootRun
+----
+
+[source,kotlin,subs="specialchars"]
+----
+const val LIGHT_NAME_PARAM = "com.faircorp.ligthname.attribute"
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+    }
+
+    /** Called when the user taps the button */
+    fun openLight(view: View) {
+        val lightname = findViewById<EditText>(R.id.txt_light_name).text.toString()
+
+        // Do something in response to button
+        val intent = Intent(this, LightActivity::class.java).apply {
+            putExtra(LIGHT_NAME_PARAM, lightname)
+        }
+        startActivity(intent)
+    }
+}
 ----

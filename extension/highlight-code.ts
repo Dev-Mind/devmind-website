@@ -12,7 +12,6 @@ export function extHighlightCode({selector}): Transform {
 
   const updateJava = (html, language) => {
     if (language === 'java' || language === 'kotlin' || language === 'typescript' || language === 'javascript') {
-      console.log(html)
       return html
         .replace(/&amp;lt<span class="token punctuation">;<\/span>/g, '&lt;')
         .replace(/&amp;gt<span class="token punctuation">;<\/span>/g, '&gt;')

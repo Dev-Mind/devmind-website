@@ -10,8 +10,7 @@ const loadLanguages = require('prismjs/components/');
 
 export function extHighlightCode({selector}): Transform {
 
-  const updateJava = (html, language) => {
-    if (language === 'java' || language === 'kotlin' || language === 'typescript' || language === 'javascript') {
+  const updateSpecialCharacters = (html) => {
       return html
         .replace(/&amp;lt<span class="token punctuation">;<\/span>/g, '&lt;')
         .replace(/&amp;gt<span class="token punctuation">;<\/span>/g, '&gt;')
@@ -19,8 +18,6 @@ export function extHighlightCode({selector}): Transform {
         .replace(/<span class=\"token operator\">&amp;<\/span>lt<span class=\"token punctuation\">;<\/span>/g, '&lt;')
         .replace(/<span class=\"token operator\">&amp;<\/span>apos<span class=\"token punctuation\">;<\/span>/g, '&apos;')
         .replace(/<span class=\"token operator\">&amp;<\/span>gt<span class=\"token punctuation\">;<\/span>/g, '&gt;')
-    }
-    return html;
   };
 
   return through2.obj((file, _, next: TransformCallback) => {
@@ -37,7 +34,7 @@ export function extHighlightCode({selector}): Transform {
       const fileContents = elem.html();
       loadLanguages(language)
       const highlightedContents = Prism.highlight(fileContents, Prism.languages[language], language);
-      const finalHtml = updateJava(highlightedContents, language);
+      const finalHtml = updateSpecialCharacters(highlightedContents);
       elem.parent().replaceWith(`<pre class="language-${language}">${finalHtml}</pre>`);
       elem.addClass('highlights');
     });

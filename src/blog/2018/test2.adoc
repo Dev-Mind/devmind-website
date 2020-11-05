@@ -85,3 +85,11 @@ class MainActivity : AppCompatActivity() {
     }
 }
 ----
+
+[source,kotlin,subs="specialchars"]
+----
+fun main(){
+    val name = "Dev-Mind"
+    println("Hello world $name")
+}
+----

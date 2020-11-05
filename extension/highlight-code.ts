@@ -11,13 +11,16 @@ const loadLanguages = require('prismjs/components/');
 export function extHighlightCode({selector}): Transform {
 
   const updateSpecialCharacters = (html) => {
-      return html
-        .replace(/&amp;lt<span class="token punctuation">;<\/span>/g, '&lt;')
-        .replace(/&amp;gt<span class="token punctuation">;<\/span>/g, '&gt;')
-        .replace(/<span class=\"token operator\">&amp;<\/span>quot<span class=\"token punctuation\">;<\/span>/g, '&quot;')
-        .replace(/<span class=\"token operator\">&amp;<\/span>lt<span class=\"token punctuation\">;<\/span>/g, '&lt;')
-        .replace(/<span class=\"token operator\">&amp;<\/span>apos<span class=\"token punctuation\">;<\/span>/g, '&apos;')
-        .replace(/<span class=\"token operator\">&amp;<\/span>gt<span class=\"token punctuation\">;<\/span>/g, '&gt;')
+    return html
+      .replace(/&amp;lt<span class="token punctuation">;<\/span>/g, '&lt;')
+      .replace(/&amp;gt<span class="token punctuation">;<\/span>/g, '&gt;')
+      .replace(/&amp;quot<span class="token punctuation">;<\/span>/g, '&quot;')
+      .replace(/&amp;pos<span class="token punctuation">;<\/span>/g, '&pos;')
+      .replace(/<span class=\"token operator\">&amp;<\/span>quot<span class=\"token punctuation\">;<\/span>/g, '&quot;')
+      .replace(/<span class=\"token operator\">&amp;<\/span>lt<span class=\"token punctuation\">;<\/span>/g, '&lt;')
+      .replace(/<span class=\"token operator\">&amp;<\/span>apos<span class=\"token punctuation\">;<\/span>/g, '&apos;')
+      .replace(/<span class=\"token operator\">&amp;<\/span>gt<span class=\"token punctuation\">;<\/span>/g, '&gt;')
+      .replace(/<span class=\"token operator\">&amp;<\/span>gt<span class=\"token punctuation\">;<\/span>/g, '&gt;')
   };
 
   return through2.obj((file, _, next: TransformCallback) => {
@@ -26,7 +29,8 @@ export function extHighlightCode({selector}): Transform {
       lowerCaseTags: false,
       withEndIndices: false,
       normalizeWhitespace: false,
-      recognizeSelfClosing:true});
+      recognizeSelfClosing: true
+    });
 
     $(selector).each((index, code) => {
       const elem = $(code);

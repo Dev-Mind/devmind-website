@@ -1,6 +1,6 @@
 {
   "name": "devmind-website",
-  "version": "2.1.2",
+  "version": "2.1.11",
   "description": "Gulp extensions to generate a website with blog pages written in asciidoc",
   "main": "index.js",
   "scripts": {
@@ -35,15 +35,15 @@
     "cheerio": "^0.22.0",
     "fs": "^0.0.1-security",
     "graceful-fs": "^4.2.4",
-    "handlebars": "^4.7.6",
-    "highlight.js": "^10.1.2",
+    "handlebars": "^4.7.7",
+    "highlight.js": "^10.7.3",
     "kind-of": "^6.0.3",
     "lodash.merge": "^4.6.2",
     "mixin-deep": "^2.0.1",
     "moment": "^2.27.0",
     "plugin-error": "^1.0.1",
     "prismjs": "^1.22.0",
-    "set-value": "^3.0.2",
+    "set-value": "^3.0.3",
     "through2": "^4.0.2",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.2"

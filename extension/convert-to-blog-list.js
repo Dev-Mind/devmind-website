@@ -31,7 +31,7 @@ function extConvertToBlogList(options, handlebarsTemplateFile, partials, filenam
         description: function () { return pages[filename].description; },
         gendate: function () { return time_1.currentDate(); },
         genInstant: function () { return time_1.currentDateIso(); },
-        canonicalUrl: function () { return filename; },
+        canonicalUrl: function () { return (filename === 'index.html') ? null : filename; },
         firstArticle: undefined,
         secondArticles: undefined,
         otherArticles: undefined,

@@ -40,6 +40,9 @@ export class DevMindGulpBuilder {
         this.options.metadata.html = givenOptions.metadata.html || defaultOptions.metadata.html;
         this.options.metadata.sitemap = givenOptions.metadata.sitemap || defaultOptions.metadata.sitemap;
       }
+      if(givenOptions.dirNames) {
+        this.options.dirNames = givenOptions.dirNames;
+      }
     }
   }
 

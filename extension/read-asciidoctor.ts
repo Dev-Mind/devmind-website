@@ -48,11 +48,20 @@ export function extReadAsciidoc(options: Options): Transform {
     const filename = file.path.substring(file.path.lastIndexOf("/") + 1, file.path.lastIndexOf("."));
 
     let dir = '';
-    if (file.path.lastIndexOf("blog/") > 0) {
-      dir = file.path.substring(file.path.lastIndexOf("blog/") + "blog/".length, file.path.lastIndexOf("/"));
+    if(options.dirNames && options.dirNames.length > 0) {
+      options.dirNames.forEach(dirname => {
+        if (file.path.lastIndexOf(dirname) > 0) {
+          dir = file.path.substring(file.path.lastIndexOf(dirname) + dirname.length, file.path.lastIndexOf("/"));
+        }
+      })
     }
-    if (file.path.lastIndexOf("training/") > 0) {
-      dir = file.path.substring(file.path.lastIndexOf("training/") + "training/".length, file.path.lastIndexOf("/"));
+    else {
+      if (file.path.lastIndexOf("blog/") > 0) {
+        dir = file.path.substring(file.path.lastIndexOf("blog/") + "blog/".length, file.path.lastIndexOf("/"));
+      }
+      if (file.path.lastIndexOf("training/") > 0) {
+        dir = file.path.substring(file.path.lastIndexOf("training/") + "training/".length, file.path.lastIndexOf("/"));
+      }
     }
 
     const indexData: IndexBlogData = {

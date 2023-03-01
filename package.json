@@ -1,6 +1,6 @@
 {
   "name": "devmind-website",
-  "version": "2.1.12",
+  "version": "2.1.13",
   "description": "Gulp extensions to generate a website with blog pages written in asciidoc",
   "main": "index.js",
   "scripts": {

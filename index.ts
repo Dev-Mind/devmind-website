@@ -23,7 +23,8 @@ const defaultOptions: Options = {
     blog: 'src/metadata/blog.json',
     html: 'src/metadata/html.json',
     sitemap: 'src/metadata/sitemap.json'
-  }
+  },
+  dirNames: ['training/', 'blog/']
 };
 
 export class DevMindGulpBuilder {

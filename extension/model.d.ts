@@ -9,6 +9,7 @@ export interface Options {
     path?: string;
     modeDev?: boolean;
     metadata?: Metadata;
+    dirNames: Array<string>;
 }
 export interface HandlebarsTemplate {
     key: string;

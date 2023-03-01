@@ -22,7 +22,8 @@ var defaultOptions = {
         blog: 'src/metadata/blog.json',
         html: 'src/metadata/html.json',
         sitemap: 'src/metadata/sitemap.json'
-    }
+    },
+    dirNames: ['training/', 'blog/']
 };
 var DevMindGulpBuilder = /** @class */ (function () {
     function DevMindGulpBuilder(givenOptions) {

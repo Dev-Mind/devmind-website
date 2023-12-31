@@ -31,4 +31,5 @@ export interface IndexBlogData extends IndexData {
     imgteaser: string;
     modeDev: boolean;
     blog: boolean;
+    subdirectory: string;
 }

@@ -38,19 +38,23 @@ function extReadAsciidoc(options) {
         file.attributes = file.ast.getAttributes();
         var filename = file.path.substring(file.path.lastIndexOf("/") + 1, file.path.lastIndexOf("."));
         var dir = '';
+        var subdirectory = '';
         if (options.dirNames && options.dirNames.length > 0) {
             options.dirNames.forEach(function (dirname) {
                 if (file.path.lastIndexOf(dirname) > 0) {
                     dir = file.path.substring(file.path.lastIndexOf(dirname) + dirname.length, file.path.lastIndexOf("/"));
+                    subdirectory = dirname;
                 }
             });
         }
         else {
             if (file.path.lastIndexOf("blog/") > 0) {
                 dir = file.path.substring(file.path.lastIndexOf("blog/") + "blog/".length, file.path.lastIndexOf("/"));
+                subdirectory = 'blog';
             }
             if (file.path.lastIndexOf("training/") > 0) {
                 dir = file.path.substring(file.path.lastIndexOf("training/") + "training/".length, file.path.lastIndexOf("/"));
+                subdirectory = 'training';
             }
         }
         var indexData = {
@@ -63,6 +67,7 @@ function extReadAsciidoc(options) {
             category: file.attributes.category,
             teaser: file.attributes.teaser,
             imgteaser: file.attributes.imgteaser,
+            subdirectory: subdirectory,
             modeDev: options.modeDev,
             blog: true,
             dir: dir,
@@ -85,7 +90,7 @@ function extReadAsciidoc(options) {
             imgteaser: function () { return indexData.imgteaser; },
             status: function () { return file.attributes.status; },
             modedev: function () { return indexData.modeDev; },
-            canonicalUrl: function () { return "blog/" + dir + "/" + filename + ".html"; }
+            canonicalUrl: function () { return subdirectory + "/" + dir + "/" + filename + ".html"; }
         };
         if (file.attributes.status !== 'draft') {
             file.indexData = indexData;

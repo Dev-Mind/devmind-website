@@ -49,4 +49,5 @@ export interface IndexBlogData extends IndexData {
   modeDev: boolean;
   // boolean to say if the page is a blog post or not
   blog: boolean;
+  subdirectory : string;
 }

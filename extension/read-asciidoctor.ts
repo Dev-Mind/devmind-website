@@ -48,19 +48,23 @@ export function extReadAsciidoc(options: Options): Transform {
     const filename = file.path.substring(file.path.lastIndexOf("/") + 1, file.path.lastIndexOf("."));
 
     let dir = '';
+    let subdirectory = '';
     if(options.dirNames && options.dirNames.length > 0) {
       options.dirNames.forEach(dirname => {
         if (file.path.lastIndexOf(dirname) > 0) {
           dir = file.path.substring(file.path.lastIndexOf(dirname) + dirname.length, file.path.lastIndexOf("/"));
+          subdirectory = dirname;
         }
       })
     }
     else {
       if (file.path.lastIndexOf("blog/") > 0) {
         dir = file.path.substring(file.path.lastIndexOf("blog/") + "blog/".length, file.path.lastIndexOf("/"));
+        subdirectory = 'blog';
       }
       if (file.path.lastIndexOf("training/") > 0) {
         dir = file.path.substring(file.path.lastIndexOf("training/") + "training/".length, file.path.lastIndexOf("/"));
+        subdirectory = 'training';
       }
     }
 
@@ -74,6 +78,7 @@ export function extReadAsciidoc(options: Options): Transform {
       category: file.attributes.category,
       teaser: file.attributes.teaser,
       imgteaser: file.attributes.imgteaser,
+      subdirectory: subdirectory,
       modeDev: options.modeDev,
       blog: true,
       dir: dir,
@@ -97,7 +102,7 @@ export function extReadAsciidoc(options: Options): Transform {
       imgteaser: () => indexData.imgteaser,
       status: () => file.attributes.status,
       modedev: () => indexData.modeDev,
-      canonicalUrl: () => `blog/${dir}/${filename}.html`
+      canonicalUrl: () => `${subdirectory}/${dir}/${filename}.html`
     };
 
     if (file.attributes.status !== 'draft') {

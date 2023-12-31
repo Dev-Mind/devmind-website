@@ -24,16 +24,25 @@ export function extConvertToSitemap(options: Options): Transform {
 
   let xml = ``;
 
-  function createUrlNode(metadata) {
+  function createUrlNode(file, metadata) {
     if (!!metadata.priority && metadata.priority < 0) {
       return '';
     }
     if (metadata.blog) {
-      return `<url>
-        <loc>${siteMetadata.url}/blog/${metadata.dir}/${metadata.filename}.html</loc>
-        <lastmod>${moment(siteMetadata.revdate).format()}</lastmod>
-        <priority>0.51</priority>
-    </url>`;
+      if (file.path.lastIndexOf("blog/") > 0) {
+        return `<url>
+            <loc>${siteMetadata.url}/blog/${metadata.dir}/${metadata.filename}.html</loc>
+            <lastmod>${moment(siteMetadata.revdate).format()}</lastmod>
+            <priority>0.51</priority>
+        </url>`;
+      }
+      if (file.path.lastIndexOf("training/") > 0) {
+        return `<url>
+            <loc>${siteMetadata.url}/blog/${metadata.dir}/${metadata.filename}.html</loc>
+            <lastmod>${moment(siteMetadata.revdate).format()}</lastmod>
+            <priority>0.51</priority>
+        </url>`;
+      }
     }
     return `<url>
         <loc>${siteMetadata.url}/${metadata.filename}.html</loc>
@@ -45,7 +54,7 @@ export function extConvertToSitemap(options: Options): Transform {
   const iterateOnStream = function (file, _, next) {
     const data = JSON.parse(file.contents);
     xml += data.length === 0 ? '' : data
-      .map(metadata => createUrlNode(metadata))
+      .map(metadata => createUrlNode(file, metadata))
       .reduce((a, b) => a + b);
     next(null, file)
   };

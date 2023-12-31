@@ -19,19 +19,24 @@ function extConvertToSitemap(options) {
     }
     var siteMetadata = JSON.parse(fs.readFileSync(pagesPath, model_1.FILE_ENCODING));
     var xml = "";
-    function createUrlNode(metadata) {
+    function createUrlNode(file, metadata) {
         if (!!metadata.priority && metadata.priority < 0) {
             return '';
         }
         if (metadata.blog) {
-            return "<url>\n        <loc>" + siteMetadata.url + "/blog/" + metadata.dir + "/" + metadata.filename + ".html</loc>\n        <lastmod>" + moment(siteMetadata.revdate).format() + "</lastmod>\n        <priority>0.51</priority>\n    </url>";
+            if (file.path.lastIndexOf("blog/") > 0) {
+                return "<url>\n            <loc>" + siteMetadata.url + "/blog/" + metadata.dir + "/" + metadata.filename + ".html</loc>\n            <lastmod>" + moment(siteMetadata.revdate).format() + "</lastmod>\n            <priority>0.51</priority>\n        </url>";
+            }
+            if (file.path.lastIndexOf("training/") > 0) {
+                return "<url>\n            <loc>" + siteMetadata.url + "/blog/" + metadata.dir + "/" + metadata.filename + ".html</loc>\n            <lastmod>" + moment(siteMetadata.revdate).format() + "</lastmod>\n            <priority>0.51</priority>\n        </url>";
+            }
         }
         return "<url>\n        <loc>" + siteMetadata.url + "/" + metadata.filename + ".html</loc>\n        <lastmod>" + moment().format() + "</lastmod>\n        <priority>" + (metadata.priority ? metadata.priority : 0.51) + "</priority>\n    </url>";
     }
     var iterateOnStream = function (file, _, next) {
         var data = JSON.parse(file.contents);
         xml += data.length === 0 ? '' : data
-            .map(function (metadata) { return createUrlNode(metadata); })
+            .map(function (metadata) { return createUrlNode(file, metadata); })
             .reduce(function (a, b) { return a + b; });
         next(null, file);
     };

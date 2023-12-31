@@ -90,7 +90,7 @@ function extReadAsciidoc(options) {
             imgteaser: function () { return indexData.imgteaser; },
             status: function () { return file.attributes.status; },
             modedev: function () { return indexData.modeDev; },
-            canonicalUrl: function () { return subdirectory + "/" + dir + "/" + filename + ".html"; }
+            canonicalUrl: function () { return (subdirectory + "/" + dir + "/" + filename + ".html").replace('//', '/'); }
         };
         if (file.attributes.status !== 'draft') {
             file.indexData = indexData;

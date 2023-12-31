@@ -102,7 +102,7 @@ export function extReadAsciidoc(options: Options): Transform {
       imgteaser: () => indexData.imgteaser,
       status: () => file.attributes.status,
       modedev: () => indexData.modeDev,
-      canonicalUrl: () => `${subdirectory}/${dir}/${filename}.html`
+      canonicalUrl: () => `${subdirectory}/${dir}/${filename}.html`.replace('//', '/')
     };
 
     if (file.attributes.status !== 'draft') {
